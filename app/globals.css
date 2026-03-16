@@ -155,3 +155,7 @@
     transform: translateY(-10px);
   }
 }
+
+body {
+  cursor: none;
+}
