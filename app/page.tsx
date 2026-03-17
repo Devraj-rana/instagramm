@@ -6,6 +6,7 @@ import { TrendingUp, Users, Zap, BarChart3, Shield, Globe } from "lucide-react";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import FuturisticHero from "@/components/modern/FuturisticHero";
+import ServicesSection from "@/components/modern/ServicesSection";
 import StickySearchBar from "@/components/modern/StickySearchBar";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -260,6 +261,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <ServicesSection />
       </main>
 
       <Footer />

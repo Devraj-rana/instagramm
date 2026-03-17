@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { Instagram, Twitter, Github, Sparkles, ArrowRight, Mail, Zap, Hexagon, Command } from "lucide-react";
+import { Twitter, Github, Sparkles, ArrowRight, Mail, Zap, Hexagon, Command } from "lucide-react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import Logo from "./Logo";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, MeshDistortMaterial, Stars, ContactShadows, PresentationControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -79,9 +80,9 @@ export default function Footer() {
     const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
     const navLinks = [
-        { title: "Ecosystem", icon: Command, links: ["Pro Analytics", "Creator Studio", "Enterprise API", "App Integrations"] },
+        { title: "Ecosystem", icon: Command, links: ["Services", "Creator Studio", "Enterprise API", "App Integrations"] },
         { title: "Knowledge", icon: Zap, links: ["Algorithm Guide", "Engagement Docs", "Growth Case Studies", "Help Center"] },
-        { title: "Network", icon: Hexagon, links: ["About IGA", "Careers", "Press Kit", "Contact Us"] },
+        { title: "Network", icon: Hexagon, links: ["About SocialInsight", "Careers", "Press Kit", "Contact Us"] },
     ];
 
     return (
@@ -160,16 +161,10 @@ export default function Footer() {
                     {/* Brand Master Column */}
                     <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left pr-0 lg:pr-12">
                         <Link href="/" className="group flex items-center gap-4 mb-8">
-                            <div className="relative flex h-16 w-16 items-center justify-center rounded-3xl bg-zinc-950 border border-white/10 shadow-2xl transition-all duration-700 group-hover:border-pink-500/50 group-hover:shadow-[0_0_50px_rgba(236,72,153,0.4)] overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-500 opacity-0 group-hover:opacity-30 transition-opacity duration-700"></div>
-                                <Instagram className="relative z-10 h-8 w-8 text-white transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12" />
-                            </div>
-                            <span className="font-display text-4xl font-black tracking-tighter text-white drop-shadow-2xl">
-                                IGA<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500">.</span>
-                            </span>
+                            <Logo className="scale-125 origin-left" />
                         </Link>
                         <p className="text-zinc-400 text-lg leading-relaxed max-w-sm mb-10">
-                            A completely unhinged cinematic analytics experience. We decode massive engagement datasets into unbelievably beautiful, actionable insights.
+                            The definitive cinematic social analytics platform. We transform complex digital footprints into ultra-premium, actionable growth intelligence.
                         </p>
 
                         <div className="flex gap-4">
@@ -194,14 +189,14 @@ export default function Footer() {
                                     {column.links.map((link) => (
                                         <li key={link}>
                                             <Link
-                                                href="#"
+                                                href={link === "Services" ? "/#services" : link === "Privacy" ? "/privacy" : "#"}
                                                 className="relative group/link inline-block py-1 text-base font-semibold text-zinc-400 transition-colors hover:text-white"
                                                 onMouseEnter={() => setHoveredLink(link)}
                                                 onMouseLeave={() => setHoveredLink(null)}
                                             >
                                                 <span className="relative z-10 flex items-center gap-2">
                                                     {link}
-                                                    {(link === "Enterprise API" || link === "Pro Analytics") && (
+                                                    {(link === "Enterprise API" || link === "Services") && (
                                                         <span className="inline-flex items-center rounded-full bg-pink-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-pink-400 ring-1 ring-inset ring-pink-500/30">
                                                             NEW
                                                         </span>
@@ -233,8 +228,8 @@ export default function Footer() {
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent pointer-events-none"></div>
 
                     <div className="relative flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-bold text-zinc-500">
-                        <Link href="#" className="hover:text-white transition-colors duration-300">Privacy Policy</Link>
-                        <Link href="#" className="hover:text-white transition-colors duration-300">Terms of Service</Link>
+                        <Link href="/privacy" className="hover:text-white transition-colors duration-300">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-white transition-colors duration-300">Terms of Service</Link>
                         <Link href="#" className="hover:text-white transition-colors duration-300">Cookie Settings</Link>
                     </div>
 

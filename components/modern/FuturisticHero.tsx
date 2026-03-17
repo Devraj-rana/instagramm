@@ -107,8 +107,8 @@ export default function FuturisticHero({
                     </div>
 
                     <h1 className="font-display text-5xl font-black tracking-tighter text-white drop-shadow-2xl sm:text-7xl lg:text-8xl leading-[1.1] max-w-4xl mx-auto">
-                        Unleash <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">dimensional</span> <br className="hidden sm:block" />
-                        insights for your brand.
+                        Decode the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">social DNA</span> <br className="hidden sm:block" />
+                        of any brand.
                     </h1>
 
                     <p className="mt-8 text-lg font-medium text-zinc-300/80 leading-relaxed sm:text-xl/8 max-w-2xl mx-auto">
@@ -133,7 +133,7 @@ export default function FuturisticHero({
                                 disabled={!username.trim() || isLoading}
                                 className="flex items-center justify-center gap-2 rounded-xl bg-white text-black px-10 h-14 sm:text-lg font-bold shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed ml-2 whitespace-nowrap"
                             >
-                                {isLoading ? "Scanning..." : "Analyze"}
+                                {isLoading ? "Scanning..." : "Get Started"}
                                 {!isLoading && <ArrowRight className="h-6 w-6" />}
                             </button>
                         </form>
