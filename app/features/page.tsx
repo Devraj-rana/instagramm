@@ -1,83 +1,82 @@
-import { Sparkles, Users, Clock, Target, Shield, Zap, TrendingUp } from "lucide-react";
+"use client";
+
+import { useEffect, useRef } from "react";
+import { Zap, BarChart3, Users, TrendingUp, Shield, Globe, Sparkles } from "lucide-react";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const features = [
-    {
-        name: "Deep Audience Analytics",
-        description: "Understand exactly who your followers are, where they live, and what content they engage with most. Stop guessing and start targeting.",
-        icon: Users,
-    },
-    {
-        name: "Growth Trajectory Forecasting",
-        description: "Our AI models predict your future follower growth based on your current trajectory and historical performance data.",
-        icon: TrendingUp,
-    },
-    {
-        name: "Best Time to Post",
-        description: "Maximize your reach by posting exactly when your audience is most active. We calculate this down to the minute.",
-        icon: Clock,
-    },
-    {
-        name: "Competitor Benchmarking",
-        description: "See how your engagement and growth stack up against industry leaders and direct competitors in your niche.",
-        icon: Target,
-    },
-    {
-        name: "Shadowban Detection",
-        description: "Worried your posts aren't reaching non-followers? We scan your engagement patterns to detect potential algorithm penalties.",
-        icon: Shield,
-    },
-    {
-        name: "Instant Content Audits",
-        description: "Evaluate your recent posts instantly. Find out which hashtags, formats, and captions actually drive results.",
-        icon: Zap,
-    },
+gsap.registerPlugin(ScrollTrigger);
+
+const featureCards = [
+    { icon: Zap, title: "AI-Powered Scoring", desc: "Get an instant overall score with detailed breakdowns across 6 key metric dimensions.", color: "text-amber-400", bg: "bg-amber-500/10" },
+    { icon: BarChart3, title: "Engagement Analytics", desc: "Deep-dive into your like-to-follower ratio, comment sentiment, and posting cadence.", color: "text-cyan-400", bg: "bg-cyan-500/10" },
+    { icon: Users, title: "Audience Insights", desc: "Understand your follower demographics, growth trajectory, and retention signals.", color: "text-indigo-400", bg: "bg-indigo-500/10" },
+    { icon: TrendingUp, title: "Growth Strategy", desc: "Receive AI-generated recommendations for hashtags, posting times, and content mix.", color: "text-emerald-400", bg: "bg-emerald-500/10" },
+    { icon: Shield, title: "Competitor Analysis", desc: "Benchmark your profile against top creators in your niche with side-by-side insights.", color: "text-rose-400", bg: "bg-rose-500/10" },
+    { icon: Globe, title: "Content Optimization", desc: "Optimize every post with AI suggestions for captions, hashtags, and visual appeal.", color: "text-purple-400", bg: "bg-purple-500/10" },
 ];
 
 export default function FeaturesPage() {
+    const featuresRef = useRef<HTMLDivElement>(null);
+    const featureCardsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            if (featureCardsRef.current) {
+                const cards = featureCardsRef.current.querySelectorAll(".feature-card");
+                gsap.fromTo(cards, {
+                    y: 60,
+                    opacity: 0,
+                    scale: 0.95,
+                }, {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    stagger: 0.12,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: featuresRef.current,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse",
+                    },
+                });
+            }
+        });
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <div className="flex min-h-screen flex-col bg-[#0A0A0A] selection:bg-indigo-500/30 selection:text-indigo-200">
+        <div className="flex min-h-screen flex-col bg-[#050505] selection:bg-indigo-500/30 selection:text-indigo-200">
             <Header />
-            <main className="flex-1 relative pb-24 pt-32 sm:pt-40">
-                {/* Background glow */}
-                <div className="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
-                    <div
-                        className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 opacity-40 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-                        style={{
-                            clipPath:
-                                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-                        }}
-                    />
-                </div>
-
-                <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                    <div className="mx-auto max-w-2xl lg:text-center">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 ring-1 ring-white/10 mb-8">
-                            <Sparkles className="h-4 w-4 text-indigo-400" />
-                            <span className="text-sm font-semibold text-zinc-300">Advanced Analytics Toolkit</span>
+            <main className="flex-1 pt-32 sm:pt-40">
+                <div ref={featuresRef} className="pb-32">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                        <div className="mx-auto max-w-2xl lg:text-center mb-20">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 ring-1 ring-white/10 mb-8">
+                                <Sparkles className="h-4 w-4 text-indigo-400" />
+                                <span className="text-sm font-bold tracking-widest uppercase text-zinc-300">Feature Roadmap</span>
+                            </div>
+                            <h1 className="text-4xl font-display font-extrabold tracking-tight text-white sm:text-6xl drop-shadow-sm">
+                                Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">dominate</span> the algorithm.
+                            </h1>
+                            <p className="mt-6 text-lg leading-8 text-zinc-400">
+                                Stop relying on raw follower counts. Our proprietary AI dives deep into your profile to extract meaningful, actionable insights that actually drive growth.
+                            </p>
                         </div>
-                        <h1 className="text-4xl font-display font-extrabold tracking-tight text-white sm:text-6xl drop-shadow-sm">
-                            Everything you need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">dominate</span> the algorithm.
-                        </h1>
-                        <p className="mt-6 text-lg leading-8 text-zinc-400">
-                            Stop relying on raw follower counts. Our proprietary AI dives deep into your profile to extract meaningful, actionable insights that actually drive growth.
-                        </p>
-                    </div>
 
-                    <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-                        <div className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-                            {features.map((feature) => (
-                                <div key={feature.name} className="flex flex-col p-8 rounded-3xl bg-[#121214] ring-1 ring-white/10 shadow-xl transition-all hover:bg-[#18181B] hover:ring-white/20">
-                                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 ring-1 ring-indigo-500/20">
-                                        <feature.icon className="h-6 w-6 text-indigo-400" aria-hidden="true" />
+                        <div ref={featureCardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {featureCards.map((feature, i) => (
+                                <div key={i} className="feature-card group relative rounded-3xl bg-zinc-900/40 border border-white/5 p-10 transition-all duration-500 hover:border-white/10 hover:bg-zinc-900/80 hover:-translate-y-2 shadow-xl">
+                                    <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className={`relative h-14 w-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-8 ring-1 ring-white/10 shadow-lg`}>
+                                        <feature.icon className={`h-7 w-7 ${feature.color}`} />
                                     </div>
-                                    <h3 className="text-xl font-bold leading-7 text-white drop-shadow-sm">
-                                        {feature.name}
-                                    </h3>
-                                    <p className="mt-4 flex flex-auto flex-col text-base leading-7 text-zinc-400">
-                                        {feature.description}
-                                    </p>
+                                    <h3 className="relative text-2xl font-bold text-white mb-4 tracking-tight">{feature.title}</h3>
+                                    <p className="relative text-zinc-400 leading-relaxed font-medium">{feature.desc}</p>
                                 </div>
                             ))}
                         </div>

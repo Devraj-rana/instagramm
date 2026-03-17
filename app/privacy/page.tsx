@@ -28,7 +28,7 @@ export default function PrivacyPage() {
                 Introduction
               </h2>
               <p>
-                At SocialInsight.Tech, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services, including our analytics tools and social media growth packages.
+                At Social Insight.Tech, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services, including our analytics tools and social media growth packages.
               </p>
             </section>
 

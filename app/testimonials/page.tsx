@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 
 const testimonials = [
     {
-        body: "IGA completely changed how I approach brand deals. Being able to instantly generate an audit of my engagement rate vs my competitors gave me the leverage to double my sponsored post rates.",
+        body: "Social Insight completely changed how I approach brand deals. Being able to instantly generate an audit of my engagement rate vs my competitors gave me the leverage to double my sponsored post rates.",
         author: {
             name: "Sarah Chen",
             handle: "@sarah.explores",
@@ -40,7 +40,7 @@ const testimonials = [
         },
     },
     {
-        body: "The UI is just stunning. A lot of analytics tools look like spreadsheets from 1999. IGA is gorgeous, lightning-fast, and doesn't make me want to rip my hair out while looking at data.",
+        body: "The UI is just stunning. A lot of analytics tools look like spreadsheets from 1999. Social Insight is gorgeous, lightning-fast, and doesn't make me want to rip my hair out while looking at data.",
         author: {
             name: "Chloe Jenkins",
             handle: "@chloedesigns",
@@ -70,7 +70,7 @@ export default function TestimonialsPage() {
                             Loved by <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-indigo-400">creators</span> worldwide.
                         </h1>
                         <p className="mt-6 text-lg leading-8 text-zinc-400">
-                            See what top creators and agencies are saying about the insights they've gained using IGA.
+                            See what top creators and agencies are saying about the insights they've gained using Social Insight.
                         </p>
                     </div>
                     <div className="mx-auto mt-16 flow-root max-w-2xl sm:mt-20 lg:mx-0 lg:max-w-none">

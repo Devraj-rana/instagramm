@@ -15,7 +15,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "SocialInsight.Tech — Advanced Social Analytics",
+  title: "Social Insight.Tech — Advanced Social Analytics",
   description:
     "Unlock deep audience insights and growth metrics with AI-powered social analysis.",
 };
@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${outfit.variable} antialiased selection:bg-indigo-500/30 selection:text-indigo-200 bg-[#0A0A0A] text-zinc-100 flex flex-col min-h-screen`}>
+      <body className={`${manrope.variable} ${outfit.variable} antialiased selection:bg-indigo-500/30 selection:text-indigo-200 bg-[#050505] text-zinc-100 flex flex-col min-h-screen grainy-overlay`}>
         <Providers>
           <IntroAnimation>
             <SmoothScrolling>

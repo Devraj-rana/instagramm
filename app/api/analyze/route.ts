@@ -10,116 +10,92 @@ import { scrapeInstagramProfile } from '@/lib/instagram-scraper';
    AI scoring can be enhanced with OpenAI/Gemini/Claude
    ═══════════════════════════════════════════════════ */
 
-// ──── Simulated AI analysis ────
-async function analyzeWithAI(profileData: Awaited<ReturnType<typeof scrapeInstagramProfile>>): Promise<Omit<AnalysisResult, 'username' | 'profilePicUrl' | 'fullName' | 'followers' | 'following' | 'postsCount' | 'isVerified'>> {
-    // TODO: Replace with real AI API call
-    // e.g. const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', { ... })
+// ──── Real AI analysis using DeepSeek-V3.2 via NVIDIA NIM ────
+async function analyzeWithAI(profileData: any): Promise<Omit<AnalysisResult, 'username' | 'profilePicUrl' | 'fullName' | 'followers' | 'following' | 'postsCount' | 'isVerified'>> {
+    const apiKey = process.env.NVIDIA_API_KEY;
 
-    await new Promise((r) => setTimeout(r, 1000));
+    if (!apiKey) {
+        throw new Error('NVIDIA_API_KEY is not configured');
+    }
 
-    const engRate = profileData.engagementRate;
-    const overallScore = parseFloat(Math.min(10, engRate * 1.8 + (profileData.followers > 10000 ? 2 : 0) + Math.random() * 2 + 3).toFixed(1));
+    const payload = {
+        model: "deepseek-ai/deepseek-v3.2", // Using the specific DeepSeek V3.2 model requested
+        messages: [
+            {
+                role: "system",
+                content: "You are an elite social media growth expert. Analyze the provided Instagram profile data and return a detailed, high-intelligence audit in JSON format. Be critical but constructive. Ensure the JSON strictly follows the required schema."
+            },
+            {
+                role: "user",
+                content: `Analyze this Instagram profile:
+Username: @${profileData.username}
+Full Name: ${profileData.fullName}
+Bio: ${profileData.bio}
+Followers: ${profileData.followers}
+Following: ${profileData.following}
+Posts: ${profileData.postsCount}
+Verified: ${profileData.isVerified}
+Engagement Rate: ${profileData.engagementRate}%
+Avg Likes: ${profileData.avgLikes}
+Avg Comments: ${profileData.avgComments}
+Recent Captions: ${profileData.recentCaptions?.join(' | ') || 'N/A'}
+Recent Hashtags: ${profileData.recentHashtags?.join(', ') || 'N/A'}
+Category: ${profileData.categoryName || 'N/A'}
 
-    return {
-        overallScore,
-        summary: overallScore >= 8
-            ? `Excellent profile! @${profileData.username} shows strong engagement with a well-optimized presence. Content quality is high and the audience is actively engaged.`
-            : overallScore >= 6
-                ? `Good foundation! @${profileData.username} has solid metrics with room for optimization. Focus on consistency and engagement tactics to reach the next level.`
-                : overallScore >= 4
-                    ? `@${profileData.username}'s profile has potential but needs strategic improvements. Key areas like content quality and posting consistency need attention.`
-                    : `@${profileData.username}'s profile needs significant work. Focus on the fundamentals — bio optimization, content quality, and engagement strategies.`,
-        categories: [
-            {
-                title: 'Content Quality',
-                score: Math.min(100, Math.floor(overallScore * 9 + Math.random() * 15)),
-                insight: 'Visual consistency and content originality across recent posts.',
-                icon: '📸',
-            },
-            {
-                title: 'Engagement Rate',
-                score: Math.min(100, Math.floor(engRate * 18 + Math.random() * 10)),
-                insight: `${engRate}% engagement rate — ${engRate > 3 ? 'above' : engRate > 1.5 ? 'at' : 'below'} industry average.`,
-                icon: '💬',
-            },
-            {
-                title: 'Bio & Profile',
-                score: Math.min(100, Math.floor(overallScore * 8 + Math.random() * 20)),
-                insight: 'Bio clarity, call-to-action presence, and profile completeness.',
-                icon: '✍️',
-            },
-            {
-                title: 'Posting Consistency',
-                score: Math.min(100, Math.floor(overallScore * 7 + Math.random() * 25)),
-                insight: 'Regularity and timing optimization of content publishing.',
-                icon: '📅',
-            },
-            {
-                title: 'Hashtag Strategy',
-                score: Math.min(100, Math.floor(overallScore * 6 + Math.random() * 30)),
-                insight: 'Hashtag diversity, relevance, and reach potential.',
-                icon: '#️⃣',
-            },
-            {
-                title: 'Growth Potential',
-                score: Math.min(100, Math.floor(overallScore * 8 + Math.random() * 18)),
-                insight: 'Follower-to-following ratio and audience growth trajectory.',
-                icon: '🚀',
-            },
+Return a JSON object with this exact structure:
+{
+  "overallScore": number (0-10, one decimal),
+  "summary": "detailed 2-3 sentence overview",
+  "categories": [
+    { "title": "Content Quality", "score": 0-100, "insight": "...", "icon": "📸" },
+    { "title": "Engagement Rate", "score": 0-100, "insight": "...", "icon": "💬" },
+    { "title": "Bio & Profile", "score": 0-100, "insight": "...", "icon": "✍️" },
+    { "title": "Posting Consistency", "score": 0-100, "insight": "...", "icon": "📅" },
+    { "title": "Hashtag Strategy", "score": 0-100, "insight": "...", "icon": "#️⃣" },
+    { "title": "Growth Potential", "score": 0-100, "insight": "...", "icon": "🚀" }
+  ],
+  "improvements": [
+    { "title": "...", "suggestions": ["...", "...", "..."], "priority": "high"|"medium"|"low", "icon": "..." }
+  ]
+}
+Return ONLY the JSON object, no other text.`
+            }
         ],
-        improvements: [
-            {
-                title: 'Optimize Posting Schedule',
-                suggestions: [
-                    'Post during peak hours (11am–1pm and 7pm–9pm) for maximum reach',
-                    'Maintain a consistent 4–5 posts per week cadence',
-                    'Use Instagram Insights to find your audience\'s active times',
-                ],
-                priority: 'high',
-                icon: '⏰',
-            },
-            {
-                title: 'Enhance Engagement',
-                suggestions: [
-                    'Reply to comments within the first hour of posting',
-                    'Use interactive stickers (polls, questions) in Stories',
-                    'Collaborate with creators in your niche for cross-promotion',
-                ],
-                priority: 'high',
-                icon: '🤝',
-            },
-            {
-                title: 'Improve Content Mix',
-                suggestions: [
-                    'Add more Reels — they get 2x more reach than static posts',
-                    'Create carousel posts for educational content (higher saves)',
-                    'Experiment with behind-the-scenes and authentic content',
-                ],
-                priority: 'medium',
-                icon: '🎬',
-            },
-            {
-                title: 'Refine Hashtag Strategy',
-                suggestions: [
-                    'Use a mix of 3–5 large, 10–15 mid-size, and 5–10 niche hashtags',
-                    'Rotate hashtag sets to avoid shadowban risks',
-                    'Research competitor hashtags for untapped opportunities',
-                ],
-                priority: 'medium',
-                icon: '🏷️',
-            },
-            {
-                title: 'Strengthen Bio & Profile',
-                suggestions: [
-                    'Add a clear value proposition in the first line of your bio',
-                    'Include a compelling call-to-action with link',
-                    'Use branded Story Highlights with custom cover images',
-                ],
-                priority: 'low',
-                icon: '✨',
-            },
-        ],
+        max_tokens: 1024,
+        temperature: 0.7,
+        response_format: { type: "json_object" }
     };
+
+    try {
+        const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[NVIDIA NIM] API Error: ${response.status} - ${errorText}`);
+            throw new Error(`AI Analysis failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const content = data.choices[0].message.content;
+        
+        // Ensure content is valid JSON
+        try {
+            return JSON.parse(content);
+        } catch (parseError) {
+            console.error("[NVIDIA NIM] JSON Parse Error:", content);
+            throw new Error("Invalid response format from AI");
+        }
+    } catch (error) {
+        console.error(`[NVIDIA NIM] Fetch Error:`, error);
+        throw error;
+    }
 }
 
 // ──── Route handler ────

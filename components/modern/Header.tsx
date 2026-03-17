@@ -23,10 +23,10 @@ export default function Header() {
 
                 {/* Navigation - Centered Floating Links */}
                 <nav className="hidden md:flex items-center gap-1 rounded-full bg-white/5 p-1 shadow-inner ring-1 ring-white/10">
-                    {["Home", "Features", "Services", "Testimonials"].map((item) => (
+                    {["Home", "Analytics", "Features", "Pricing", "Testimonials"].map((item) => (
                         <Link
                             key={item}
-                            href={item === "Home" ? "/" : item === "Services" ? "/#services" : `/${item.toLowerCase()}`}
+                            href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
                             className="relative px-5 py-2 text-sm font-bold text-zinc-400 transition-colors hover:text-white group rounded-full hover:bg-white/10 overflow-hidden"
                         >
                             <span className="relative z-10">{item}</span>

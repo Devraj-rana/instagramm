@@ -268,9 +268,9 @@ export default function IntroAnimation({ children }: { children: React.ReactNode
                         className="absolute w-[400px] h-[200px] bg-indigo-500/30 rounded-full blur-[80px] pointer-events-none opacity-0"
                     />
                     <div ref={logoRef} className="flex items-center gap-3 opacity-0">
-                        <span className="font-display text-7xl sm:text-9xl font-black tracking-tighter text-white drop-shadow-[0_0_60px_rgba(79,70,229,0.5)]">
-                            IGA
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">.</span>
+                        <span className="font-display text-4xl sm:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_60px_rgba(79,70,229,0.5)] uppercase">
+                            Social - Insight
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">.Tech</span>
                         </span>
                     </div>
 

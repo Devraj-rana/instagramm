@@ -28,7 +28,7 @@ export default function TermsOfService() {
                 1. Acceptance of Terms
               </h2>
               <p>
-                By accessing or using SocialInsight.Tech ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
+                By accessing or using Social Insight.Tech ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
               </p>
             </section>
 
@@ -53,7 +53,7 @@ export default function TermsOfService() {
                 3. Social Media Policies
               </h2>
               <p>
-                SocialInsight.Tech is not affiliated with Instagram, TikTok, YouTube, or Twitter. You are responsible for ensuring your use of our services complies with the terms and conditions of these third-party platforms.
+                Social Insight.Tech is not affiliated with Instagram, TikTok, YouTube, or Twitter. You are responsible for ensuring your use of our services complies with the terms and conditions of these third-party platforms.
               </p>
             </section>
 
@@ -73,7 +73,7 @@ export default function TermsOfService() {
                 5. Limitation of Liability
               </h2>
               <p>
-                SocialInsight.Tech shall not be liable for any indirect, incidental, or consequential damages resulting from the use or inability to use the Platform. We do not guarantee specific growth results as social media algorithms are dynamic.
+                Social Insight.Tech shall not be liable for any indirect, incidental, or consequential damages resulting from the use or inability to use the Platform. We do not guarantee specific growth results as social media algorithms are dynamic.
               </p>
             </section>
 
