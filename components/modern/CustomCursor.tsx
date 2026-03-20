@@ -27,7 +27,6 @@ export default function CustomCursor() {
             skewingText: 2,
             skewingIcon: 2,
             skewingMedia: 2,
-            skewingImage: 2,
             stickDelta: 0.15,
             className: "mf-cursor",
             innerClassName: "mf-cursor-inner",
