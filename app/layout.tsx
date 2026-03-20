@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   title: "Social Insight.Tech — Advanced Social Analytics",
   description:
     "Unlock deep audience insights and growth metrics with AI-powered social analysis.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 import SmoothScrolling from "@/components/modern/SmoothScrolling";
