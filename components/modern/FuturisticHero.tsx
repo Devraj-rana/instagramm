@@ -8,7 +8,16 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles as SparklesIcon, CheckCircle2, Instagram } from "lucide-react";
 import * as THREE from "three";
 
-function AbstractShape({ position, scale, materialColor, distort, speed, type }: any) {
+type AbstractShapeProps = {
+    position: [number, number, number];
+    scale: number;
+    materialColor: string;
+    distort: number;
+    speed: number;
+    type: "torus" | "icosahedron" | "octahedron";
+};
+
+function AbstractShape({ position, scale, materialColor, distort, speed, type }: AbstractShapeProps) {
     const meshRef = useRef<THREE.Mesh>(null);
 
     useFrame((state) => {
@@ -79,7 +88,7 @@ export default function FuturisticHero({
     isLoading: boolean;
 }) {
     return (
-        <div className="relative w-full h-[100vh] min-h-[800px] overflow-hidden bg-black selection:bg-cyan-500/30">
+        <div className="relative w-full h-screen min-h-200 overflow-hidden bg-black selection:bg-cyan-500/30">
             {/* 3D Canvas Background */}
             <div className="absolute inset-0 z-0">
                 <Canvas camera={{ position: [0, 0, 8], fov: 45 }} dpr={[1, 2]}>
@@ -107,7 +116,7 @@ export default function FuturisticHero({
                     </div>
 
                     <h1 className="font-display text-5xl font-black tracking-tighter text-white drop-shadow-2xl sm:text-7xl lg:text-8xl leading-[1.1] max-w-4xl mx-auto">
-                        Decode the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">social DNA</span> <br className="hidden sm:block" />
+                        Decode the <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-indigo-400 to-pink-500">social DNA</span> <br className="hidden sm:block" />
                         of any brand.
                     </h1>
 
@@ -116,7 +125,7 @@ export default function FuturisticHero({
                     </p>
 
                     {/* Glassmorphism Input Field */}
-                    <div className="mt-12 flex w-full flex-col items-center justify-center gap-4 sm:flex-row max-w-3xl mx-auto relative z-[60]">
+                    <div className="mt-12 flex w-full flex-col items-center justify-center gap-4 sm:flex-row max-w-3xl mx-auto relative z-60">
                         <form onSubmit={onAnalyze} className="flex w-full items-center pl-6 pr-2 py-2.5 rounded-2xl bg-[#0F0F11]/95 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/15 transition-all hover:ring-white/30 focus-within:ring-2 focus-within:ring-pink-500 focus-within:shadow-[0_0_50px_rgba(236,72,153,0.3)] group">
                             <Instagram className="h-7 w-7 text-zinc-400 group-focus-within:text-pink-500 transition-colors mr-4 shrink-0" />
                             <input
@@ -157,7 +166,7 @@ export default function FuturisticHero({
             </div>
 
             {/* Foreground gradient fade out */}
-            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-linear-to-t from-[#0A0A0A] to-transparent z-10 pointer-events-none"></div>
         </div>
     );
 }

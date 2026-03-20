@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { AnalysisResult, AnalysisAPIResponse } from '@/lib/types';
 import { scrapeInstagramProfile } from '@/lib/instagram-scraper';
+import type { ProfileData } from '@/lib/types';
 
 /* ═══════════════════════════════════════════════════
    POST /api/analyze
@@ -11,7 +12,7 @@ import { scrapeInstagramProfile } from '@/lib/instagram-scraper';
    ═══════════════════════════════════════════════════ */
 
 // ──── Real AI analysis using DeepSeek-V3.2 via NVIDIA NIM ────
-async function analyzeWithAI(profileData: any): Promise<Omit<AnalysisResult, 'username' | 'profilePicUrl' | 'fullName' | 'followers' | 'following' | 'postsCount' | 'isVerified'>> {
+async function analyzeWithAI(profileData: ProfileData): Promise<Omit<AnalysisResult, 'username' | 'profilePicUrl' | 'fullName' | 'followers' | 'following' | 'postsCount' | 'isVerified'>> {
     const apiKey = process.env.NVIDIA_API_KEY;
 
     if (!apiKey) {
@@ -88,7 +89,7 @@ Return ONLY the JSON object, no other text.`
         // Ensure content is valid JSON
         try {
             return JSON.parse(content);
-        } catch (parseError) {
+        } catch {
             console.error("[NVIDIA NIM] JSON Parse Error:", content);
             throw new Error("Invalid response format from AI");
         }
@@ -135,8 +136,6 @@ export async function POST(request: NextRequest) {
 
         // Step 3: Combine and respond
         // Proxy the profile pic URL so the frontend doesn't hit Instagram CORP restrictions
-        const origin = request.headers.get('host') || 'localhost:3000';
-        const protocol = request.headers.get('x-forwarded-proto') || 'http';
         const proxiedPicUrl = profileData.profilePicUrl
             ? `/api/proxy-image?url=${encodeURIComponent(profileData.profilePicUrl)}`
             : '';

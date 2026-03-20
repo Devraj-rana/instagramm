@@ -13,7 +13,7 @@ export default function Logo({ className = "", showText = true }: LogoProps) {
     <div className={`flex items-center gap-3 ${className}`}>
       {/* Logo Icon */}
       <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0F0F11] border border-white/10 shadow-lg overflow-hidden group/logo">
-        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover/logo:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-linear-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover/logo:opacity-100 transition-opacity" />
 
         {/* Magnifying Glass & Trend Line (Custom SVG) */}
         <svg viewBox="0 0 100 100" className="h-7 w-7 relative z-10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +38,7 @@ export default function Logo({ className = "", showText = true }: LogoProps) {
       {/* Brand Name */}
       {showText && (
         <span className="font-display text-xl font-black tracking-tighter text-white">
-          Social Insight<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">.Tech</span>
+          Social Insight<span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400">.Tech</span>
         </span>
       )}
     </div>

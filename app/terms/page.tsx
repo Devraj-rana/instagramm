@@ -8,13 +8,13 @@ export default function TermsOfService() {
       
       <main className="flex-1 relative pt-32 pb-24 sm:pt-40">
         {/* Background Decorative Element */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none translate-y-[-50%]"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-250 h-100 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none translate-y-[-50%]"></div>
 
         <div className="relative z-10 mx-auto max-w-4xl px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="font-display text-5xl sm:text-6xl font-black tracking-tighter text-white mb-6">
-              Terms of <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-500">Service.</span>
+              Terms of <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-indigo-400 to-purple-500">Service.</span>
             </h1>
             <p className="text-zinc-500 text-lg font-medium italic">
               Last updated: March 17, 2026
@@ -28,7 +28,7 @@ export default function TermsOfService() {
                 1. Acceptance of Terms
               </h2>
               <p>
-                By accessing or using Social Insight.Tech ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
+                By accessing or using Social Insight.Tech (&quot;the Platform&quot;), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
               </p>
             </section>
 
@@ -38,7 +38,7 @@ export default function TermsOfService() {
                 2. Use of Services
               </h2>
               <p>
-                Our services are provided "as is" for analytics and social growth purposes. You agree to use the Platform only for lawful purposes and in a way that does not infringe the rights of others.
+                Our services are provided &quot;as is&quot; for analytics and social growth purposes. You agree to use the Platform only for lawful purposes and in a way that does not infringe the rights of others.
               </p>
               <ul className="list-disc pl-6 space-y-2 mt-4 text-zinc-500">
                 <li>You are responsible for maintaining the confidentiality of your account.</li>

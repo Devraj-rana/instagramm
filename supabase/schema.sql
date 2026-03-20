@@ -43,3 +43,32 @@ create policy "Users can view their own orders." on orders
 
 create policy "Users can create their own orders." on orders
   for insert with check (auth.uid() = user_id);
+
+-- Testimonials table
+create table testimonials (
+  id uuid default gen_random_uuid() primary key,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  user_id uuid references auth.users,
+  body text not null,
+  author_name text not null,
+  author_handle text not null,
+  author_image_url text not null,
+  rating integer default 5
+);
+
+alter table testimonials enable row level security;
+
+create policy "Testimonials are viewable by everyone." on testimonials
+  for select using (true);
+
+create policy "Authenticated users can insert own testimonials." on testimonials
+  for insert with check (auth.uid() = user_id);
+
+create policy "Anonymous users can insert testimonials." on testimonials
+  for insert with check (user_id is null);
+
+create policy "Users can update their own testimonials." on testimonials
+  for update using (auth.uid() = user_id);
+
+create policy "Users can delete their own testimonials." on testimonials
+  for delete using (auth.uid() = user_id);

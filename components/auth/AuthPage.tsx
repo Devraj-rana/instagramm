@@ -277,7 +277,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
     <div className="flex min-h-screen flex-col bg-[#050505] selection:bg-indigo-500/30 selection:text-indigo-200">
       <Header />
       <main className="flex flex-1 items-center justify-center px-6 py-28">
-        <div className="w-full max-w-md overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+        <div className="w-full max-w-md overflow-hidden rounded-4xl border border-white/10 bg-white/5 shadow-[0_20px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
           <div className="bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.24),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(236,72,153,0.18),transparent_35%)] px-8 py-10">
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300/80">{content.eyebrow}</p>
             <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-white">{content.title}</h1>
@@ -311,7 +311,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
               <button
                 type="submit"
                 disabled={isBusy}
-                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-pink-500 px-5 text-base font-bold text-white transition-all hover:scale-[1.01] hover:shadow-[0_15px_50px_rgba(99,102,241,0.35)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-cyan-400 via-indigo-500 to-pink-500 px-5 text-base font-bold text-white transition-all hover:scale-[1.01] hover:shadow-[0_15px_50px_rgba(99,102,241,0.35)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
               >
                 {isBusy ? <LoaderCircle className="h-5 w-5 animate-spin" /> : null}
                 {submitLabel}

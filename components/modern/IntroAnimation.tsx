@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useMemo } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, MeshDistortMaterial } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { motion, AnimatePresence } from "framer-motion";
@@ -53,12 +53,17 @@ function CrystalShape({ position, scale, color, speed, geometryType }: {
 function Particles({ count = 500 }: { count?: number }) {
     const meshRef = useRef<THREE.Points>(null);
 
+    const pseudoRandom = (seed: number) => {
+        const x = Math.sin(seed * 12.9898) * 43758.5453123;
+        return x - Math.floor(x);
+    };
+
     const { positions } = useMemo(() => {
         const pos = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
-            pos[i * 3] = (Math.random() - 0.5) * 40;
-            pos[i * 3 + 1] = (Math.random() - 0.5) * 40;
-            pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+            pos[i * 3] = (pseudoRandom(i + 1) - 0.5) * 40;
+            pos[i * 3 + 1] = (pseudoRandom(i + 2) - 0.5) * 40;
+            pos[i * 3 + 2] = (pseudoRandom(i + 3) - 0.5) * 40;
         }
         return { positions: pos };
     }, [count]);
@@ -81,10 +86,9 @@ function Particles({ count = 500 }: { count?: number }) {
 }
 
 function CameraRig() {
-    const { camera } = useThree();
-
     useFrame((state) => {
         const t = state.clock.elapsedTime;
+        const camera = state.camera;
         camera.position.x = Math.sin(t * 0.3) * 8;
         camera.position.y = Math.cos(t * 0.2) * 3 + Math.sin(t * 0.1) * 2;
         camera.position.z = 10 - t * 1.2;
@@ -248,7 +252,7 @@ export default function IntroAnimation({ children }: { children: React.ReactNode
         <>
             <div
                 ref={overlayRef}
-                className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden"
+                className="fixed inset-0 z-9999 bg-black flex flex-col items-center justify-center overflow-hidden"
             >
                 {/* 3D Canvas */}
                 <div className="absolute inset-0">
@@ -265,12 +269,12 @@ export default function IntroAnimation({ children }: { children: React.ReactNode
                     {/* Glow effect behind logo */}
                     <div
                         ref={glowRef}
-                        className="absolute w-[400px] h-[200px] bg-indigo-500/30 rounded-full blur-[80px] pointer-events-none opacity-0"
+                        className="absolute w-100 h-50 bg-indigo-500/30 rounded-full blur-[80px] pointer-events-none opacity-0"
                     />
                     <div ref={logoRef} className="flex items-center gap-3 opacity-0">
                         <span className="font-display text-4xl sm:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_60px_rgba(79,70,229,0.5)] uppercase">
                             Social - Insight
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">.Tech</span>
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-indigo-500">.Tech</span>
                         </span>
                     </div>
 
@@ -284,10 +288,10 @@ export default function IntroAnimation({ children }: { children: React.ReactNode
 
                 {/* Progress Bar */}
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-64 z-20">
-                    <div className="h-[3px] w-full bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-0.75 w-full bg-white/10 rounded-full overflow-hidden">
                         <div
                             ref={progressBarRef}
-                            className="h-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-500 rounded-full"
+                            className="h-full bg-linear-to-r from-cyan-500 via-indigo-500 to-purple-500 rounded-full"
                             style={{ width: "0%" }}
                         />
                     </div>

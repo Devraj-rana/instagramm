@@ -1,107 +1,101 @@
-"use client";
+﻿"use client";
 
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { usePathname } from 'next/navigation';
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import gsap from "gsap";
+import MouseFollower from "mouse-follower";
+import "mouse-follower/dist/mouse-follower.min.css";
 
-const CustomCursor = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const followerRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
+MouseFollower.registerGSAP(gsap);
 
-  useEffect(() => {
-    // Hide cursor on analyze page for better UX
-    if (pathname.includes('/analyze')) {
-      if (cursorRef.current) cursorRef.current.style.display = 'none';
-      if (followerRef.current) followerRef.current.style.display = 'none';
-      document.body.style.cursor = 'auto';
-      return;
-    } else {
-      if (cursorRef.current) cursorRef.current.style.display = 'block';
-      if (followerRef.current) followerRef.current.style.display = 'block';
-      document.body.style.cursor = 'none';
-    }
+export default function CustomCursor() {
+    const pathname = usePathname();
 
-    let mouseX = 0;
-    let mouseY = 0;
-    let posX = 0;
-    let posY = 0;
-
-    gsap.to({}, {
-      repeat: -1,
-      duration: 0.016,
-      onRepeat: () => {
-        if (cursorRef.current && followerRef.current) {
-          posX += (mouseX - posX) / 9;
-          posY += (mouseY - posY) / 9;
-
-          gsap.set(followerRef.current, {
-            left: posX - 12,
-            top: posY - 12,
-          });
-
-          gsap.set(cursorRef.current, {
-            left: mouseX - 5,
-            top: mouseY - 5,
-          });
+    useEffect(() => {
+        // Hide cursor on analyze page if you still want that behavior
+        if (pathname.includes("/analyze")) {
+            document.body.classList.remove("mf-cursor-active");
+            return;
         }
-      }
-    });
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    };
+        const cursor = new MouseFollower({
+            container: document.body,
+            speed: 0.5,
+            ease: "expo.out",
+            overwrite: true,
+            skewing: 1, // beautiful skew trail
+            skewingText: 2,
+            skewingIcon: 2,
+            skewingMedia: 2,
+            skewingImage: 2,
+            stickDelta: 0.15,
+            className: "mf-cursor",
+            innerClassName: "mf-cursor-inner",
+            textClassName: "mf-cursor-text",
+            mediaClassName: "mf-cursor-media",
+            mediaBoxClassName: "mf-cursor-media-box",
+            iconSvgClassName: "mf-svgsprite",
+            iconSvgNamePrefix: "-",
+            iconSvgSrc: "", // If you want to load custom SVGs later
+            dataAttr: "cursor",
+            hiddenState: "-hidden",
+            textState: "-text",
+            iconState: "-icon",
+            activeState: "-active",
+            mediaState: "-media",
+            stateDetection: {
+                "-pointer": "a,button",
+                "-hidden": "iframe"
+            },
+            visible: true,
+            visibleOnState: false,
+        });
 
-    const handleMouseEnter = () => {
-      if (cursorRef.current) {
-        gsap.to(cursorRef.current, { scale: 1.5, duration: 0.3 });
-      }
-      if (followerRef.current) {
-        gsap.to(followerRef.current, { scale: 1.3, duration: 0.3 });
-      }
-    };
+        // Add a nice custom global override just for some Awwwards aesthetic       
+        // to invert the cursor color against dark/light backgrounds automatically  
+        const style = document.createElement("style");
+        style.innerHTML = `
+            body {
+                cursor: none; /* Hide default cursor everywhere */
+            }
+            a, button, input {
+                cursor: none; /* Hide default cursor on interactive elements */
+            }
+            .mf-cursor {
+                mix-blend-mode: difference;
+                z-index: 99999;
+            }
+            .mf-cursor:before {
+                /* Awwwards standard: decent sized solid circle */
+                transform: scale(1);
+                background-color: white;
+                transition: transform 0.3s ease;
+            }
+            .mf-cursor.-pointer:before {
+                /* Shrink into a small focused dot when hovering over a link/button */
+                transform: scale(0.3) !important;
+            }
+            .mf-cursor.-active:before {
+                transform: scale(1.5);
+            }
+            .mf-cursor.-text:before {
+                opacity: 0.8 !important;
+                transform: scale(2.5) !important;
+            }
+            .mf-cursor-text {
+                font-weight: 700;
+                font-family: var(--font-sans);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+        `;
+        document.head.appendChild(style);
 
-    const handleMouseLeave = () => {
-      if (cursorRef.current) {
-        gsap.to(cursorRef.current, { scale: 1, duration: 0.3 });
-      }
-      if (followerRef.current) {
-        gsap.to(followerRef.current, { scale: 1, duration: 0.3 });
-      }
-    };
+        return () => {
+            cursor.destroy();
+            if (document.head.contains(style)) document.head.removeChild(style);    
+        };
+    }, [pathname]);
 
-    window.addEventListener('mousemove', handleMouseMove);
-    document.querySelectorAll('a, button, input[type="submit"], input[type="button"], [data-cursor-pointer]').forEach(el => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      document.querySelectorAll('a, button, input[type="submit"], input[type="button"], [data-cursor-pointer]').forEach(el => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.addEventListener('mouseleave', handleMouseLeave);
-      });
-      // Reset body cursor style
-      document.body.style.cursor = 'auto';
-    };
-  }, [pathname]);
-
-  return (
-    <>
-      <div
-        ref={cursorRef}
-        className="custom-cursor fixed w-3 h-3 rounded-full bg-white pointer-events-none z-[9999] mix-blend-difference"
-        style={{ transform: 'scale(1)' }}
-      />
-      <div
-        ref={followerRef}
-        className="custom-cursor-follower fixed w-6 h-6 rounded-full border border-white pointer-events-none z-[9999] mix-blend-difference"
-        style={{ transform: 'scale(1)' }}
-      />
-    </>
-  );
-};
-
-export default CustomCursor;
+    return null; // MouseFollower creates dom elements automatically
+}

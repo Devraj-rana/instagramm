@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, LogOut, User } from "lucide-react";
+import { ChevronRight, LogOut, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 import { useEffect, useMemo, useState } from "react";
@@ -16,7 +16,7 @@ export default function Header() {
             transition={{ type: "spring", stiffness: 200, damping: 20, duration: 0.8 }}
             className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
         >
-            <div className="pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-[2rem] border border-white/10 bg-[#121214]/60 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all hover:bg-[#121214]/80 hover:shadow-[0_8px_40px_rgba(99,102,241,0.15)] ring-1 ring-white/5">
+            <div className="pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-4xl border border-white/10 bg-[#121214]/60 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all hover:bg-[#121214]/80 hover:shadow-[0_8px_40px_rgba(99,102,241,0.15)] ring-1 ring-white/5">
                 <Link href="/" className="group flex items-center gap-3">
                     <Logo />
                 </Link>
@@ -79,7 +79,7 @@ function AuthButton() {
         if (supabaseSession?.user) {
             const metadata = supabaseSession.user.user_metadata;
             return {
-                image: null,
+                image: metadata?.avatar_url ?? null,
                 name: metadata?.full_name ?? metadata?.username ?? supabaseSession.user.email ?? "User",
             };
         }
@@ -118,10 +118,10 @@ function AuthButton() {
                         {activeUser.image ? (
                             <img src={activeUser.image} alt={activeUser.name} className="h-full w-full object-cover" />
                         ) : (
-                            <User className="h-4 w-4 text-white" />
+                            <Logo showText={false} className="scale-75" />
                         )}
                     </div>
-                    <span className="hidden max-w-[100px] truncate text-sm font-bold text-white sm:block">
+                    <span className="hidden max-w-25 truncate text-sm font-bold text-white sm:block">
                         {activeUser.name.split(" ")[0]}
                     </span>
                 </motion.button>
@@ -134,6 +134,14 @@ function AuthButton() {
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             className="absolute right-0 mt-2 w-48 origin-top-right rounded-2xl border border-white/10 bg-[#121214] p-2 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl"
                         >
+                            <Link
+                                href="/account"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-zinc-300 transition-all hover:bg-white/10 hover:text-white"
+                            >
+                                <Settings className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                                My Account
+                            </Link>
                             <button
                                 onClick={handleSignOut}
                                 disabled={isSigningOut}
@@ -155,7 +163,7 @@ function AuthButton() {
                 href="/sign-up"
                 className="group relative flex h-11 items-center justify-center gap-2 overflow-hidden rounded-full bg-white px-6 text-sm font-bold text-zinc-900 shadow-xl transition-all hover:bg-zinc-200 hover:shadow-indigo-500/25"
             >
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/10 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full"></div>
+                <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-black/10 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full"></div>
                 <span>Sign Up</span>
                 <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
