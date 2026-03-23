@@ -3,15 +3,9 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
-if (typeof window !== "undefined") {
-    gsap.registerPlugin(ScrollTrigger);
-}
-
-// Magnetic Social/Link Button for specific interactive targets
+// Magnetic Button
 function MagneticHover({ children, className = "" }: { children: React.ReactNode, className?: string }) {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
@@ -27,8 +21,7 @@ function MagneticHover({ children, className = "" }: { children: React.ReactNode
     };
 
     const handleMouseLeave = () => {
-        x.set(0);
-        y.set(0);
+        x.set(0); y.set(0);
     };
 
     return (
@@ -36,8 +29,7 @@ function MagneticHover({ children, className = "" }: { children: React.ReactNode
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={{ x: mouseXSpring, y: mouseYSpring }}
-            className={`${className}`}
-            data-cursor="-pointer"
+            className={`cursor-pointer ${className}`}
         >
             {children}
         </motion.div>
@@ -45,136 +37,96 @@ function MagneticHover({ children, className = "" }: { children: React.ReactNode
 }
 
 export default function Footer() {
-    const containerRef = useRef<HTMLDivElement>(null);
     const [currentTime, setCurrentTime] = useState("");
-    
-    // Parallax scroll effect for overall footer wrapper overlapping the section before it
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start end", "end end"]
-    });
-    
-    const yTransform = useTransform(scrollYProgress, [0, 1], [-200, 0]);
+    const currentYear = new Date().getFullYear();
+    const displayTimeZone = "Asia/Kolkata";
+    const displayTimeZoneLabel = "IST";
 
     useEffect(() => {
         const updateTime = () => {
             const now = new Date();
-            setCurrentTime(now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "America/New_York" }));
+            setCurrentTime(
+                now.toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: displayTimeZone,
+                    hour12: true,
+                })
+            );
         };
         updateTime();
-        const interval = setInterval(updateTime, 60000);
+        const interval = setInterval(updateTime, 1000);
         return () => clearInterval(interval);
-    }, []);
+    }, [displayTimeZone]);
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Text reveal animations like Uni
-            gsap.from(".reveal-text span", {
-                y: "110%",
-                duration: 1.2,
-                stagger: 0.05,
-                ease: "power4.out",
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "top 80%",
-                }
-            });
-            gsap.from(".fade-stagger", {
-                opacity: 0,
-                y: 20,
-                duration: 1,
-                stagger: 0.1,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "top 60%",
-                }
-            });
-        });
-        return () => ctx.revert();
-    }, []);
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+    const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
     return (
-        <motion.footer 
-            ref={containerRef}
-            className="relative w-full bg-[#0a0a0a] text-[#f5f5f5] pt-32 pb-8 font-sans overflow-hidden z-0"
-            style={{ clipPath: "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)" }}
-        >
-            {/* The structural container gets slightly pulled down for an un-clipping parallax feel */}
-            <motion.div style={{ y: yTransform }} className="h-full flex flex-col justify-between max-w-350 mx-auto px-6 md:px-12">
+        <footer className="relative w-full bg-[#050505] text-[#f5f5f5] pt-16 pb-8 overflow-hidden z-0 border-t border-white/5" style={{ clipPath: "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)" }}>
+            <div className="h-full max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col justify-between">
                
-                {/* ---------- TOP SECTION: Huge Call to Action ---------- */}
-                <div className="flex flex-col gap-12 border-b border-white/10 pb-16">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
-                        <div className="reveal-text overflow-hidden flex flex-col leading-[0.9]">
-                            <div className="overflow-hidden"><span className="block text-6xl md:text-8xl lg:text-[180px] font-black tracking-tighter uppercase">BECOME</span></div>
-                            <div className="overflow-hidden"><span className="block text-6xl md:text-8xl lg:text-[180px] font-black tracking-tighter uppercase text-zinc-500">ONE OF</span></div>
-                            <div className="overflow-hidden"><span className="block text-6xl md:text-8xl lg:text-[180px] font-black tracking-tighter uppercase">US</span></div>
-                        </div>
-
-                        <div className="flex flex-col gap-4 items-start md:items-end max-w-sm text-left md:text-right fade-stagger">
-                            <p className="text-xl md:text-3xl font-light text-zinc-400">
-                                Let&apos;s devise a plan and make a real impact. Let&apos;s make it big!
-                            </p>
-                            <MagneticHover>
-                                <a href="mailto:hello@socialinsight.tech" className="inline-flex items-center gap-4 px-8 py-5 mt-6 rounded-full bg-white text-black hover:bg-zinc-200 transition-colors duration-300 font-bold uppercase tracking-widest text-sm">
-                                    Let&apos;s Discuss <ArrowUpRight className="w-5 h-5" />
-                                </a>
-                            </MagneticHover>
-                        </div>
-                    </div>
-                </div>
-
-                {/* ---------- MID SECTION: Grid Links ---------- */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 py-16 text-sm uppercase tracking-widest font-semibold fade-stagger">
-                    <div className="flex flex-col gap-6">
-                        <span className="text-zinc-600 mb-2">Our Socials</span>
-                        <Link href="#" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Instagram</Link>
-                        <Link href="#" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">LinkedIn</Link>
-                        <Link href="#" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Twitter</Link>
-                        <Link href="#" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Dribbble</Link>
-                    </div>
-
+                {/* ---------- MID SECTION: Standard Clean Grid Links ---------- */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pb-16 text-sm uppercase tracking-[0.1em] font-medium text-zinc-300">
                     <div className="flex flex-col gap-6">
                         <span className="text-zinc-600 mb-2">Menu</span>
-                        <Link href="/analyze" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Analytics</Link>
-                        <Link href="/features" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Features</Link>
-                        <Link href="/cases" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Cases</Link>
-                        <Link href="/pricing" className="hover:text-cyan-400 transition-colors hover:translate-x-2 transform duration-300">Pricing</Link>
+                        <Link href="/" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Home</Link>
+                        <Link href="/analytics" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Analytics</Link>
+                        <Link href="/services" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Services</Link>
+                        <Link href="/testimonials" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Testimonials</Link>
+                        <Link href="/support" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Support</Link>
                     </div>
 
-                    <div className="flex flex-col gap-6 md:col-span-2">
-                        <span className="text-zinc-600 mb-2">Work With Us</span>
-                        <MagneticHover className="inline-block">
-                            <a href="mailto:hello@socialinsight.tech" className="text-2xl md:text-4xl font-black hover:text-cyan-400 transition-colors lowercase tracking-normal">
-                                hello@socialinsight.tech
+                    <div className="flex flex-col gap-6">
+                        <span className="text-zinc-600 mb-2">Account</span>
+                        <Link href="/sign-in" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Sign In</Link>
+                        <Link href="/sign-up" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Sign Up</Link>
+                        <Link href="/account" className="hover:text-cyan-400 transition-colors duration-300 w-fit">My Account</Link>
+                        <Link href="/privacy" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-cyan-400 transition-colors duration-300 w-fit">Terms Of Service</Link>
+                    </div>
+
+                    <div className="flex flex-col gap-6">
+                        <span className="text-zinc-600 mb-2">Support</span>
+                        <MagneticHover className="w-fit">
+                            <a href="mailto:support@socialinsight.tech" className="text-3xl md:text-4xl lg:text-4xl font-black text-white hover:text-cyan-400 transition-colors duration-500 lowercase tracking-tight">
+                                support@socialinsight.tech
                             </a>
                         </MagneticHover>
-                        <div className="mt-8 flex gap-4 text-zinc-500">
-                            <div>NEW YORK, US <span>{currentTime} EST</span></div>
+                        
+                        <div className="mt-4 flex flex-col sm:flex-row gap-6 items-start sm:items-center p-5 rounded-2xl bg-[#0a0a0a] border border-white/5 w-fit">
+                            <div>
+                                <span className="block text-[10px] text-zinc-500 mb-1 tracking-[0.2em] font-medium">LOCAL TIME</span>
+                                <span className="font-mono text-white tracking-widest text-sm">{currentTime} {displayTimeZoneLabel}</span>
+                            </div>
+                            <div className="hidden sm:block w-px h-8 bg-white/10"></div>
+                            <div className="flex items-center gap-3">
+                                <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div>
+                                <span className="text-xs text-zinc-300 font-medium tracking-[0.1em]">SUPPORT AVAILABLE</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* ---------- BOTTOM SECTION: Copyright & Back to Top ---------- */}
-                <div className="flex flex-col md:flex-row justify-between items-center py-6 border-t border-white/10 uppercase tracking-widest text-xs font-bold text-zinc-500 fade-stagger">
-                    <div className="flex gap-4">
-                        <span>© {new Date().getFullYear()}, SocialInsight Tech</span>
-                        <span className="hidden md:inline">•</span>
-                        <span>All rights reserved</span>
+                <div className="flex flex-col md:flex-row justify-between items-center py-6 border-t border-white/10 uppercase tracking-[0.15em] text-[10px] font-bold text-zinc-500">
+                    <div className="flex flex-wrap items-center justify-center gap-4">
+                        <span>© {currentYear}, SOCIALINSIGHT TECH</span>
+                        <span className="hidden md:inline w-1 h-1 rounded-full bg-zinc-800"></span>
+                        <Link href="/privacy" className="hover:text-white transition-colors">PRIVACY POLICY</Link>
+                        <span className="hidden md:inline w-1 h-1 rounded-full bg-zinc-800"></span>
+                        <Link href="/terms" className="hover:text-white transition-colors">TERMS OF SERVICE</Link>
+                        <span className="hidden md:inline w-1 h-1 rounded-full bg-zinc-800"></span>
+                        <Link href="/support" className="hover:text-white transition-colors">SUPPORT</Link>
                     </div>
 
                     <MagneticHover>
-                        <button onClick={scrollToTop} className="mt-4 md:mt-0 px-6 py-3 rounded-full border border-zinc-800 hover:border-white hover:text-white transition-all flex items-center gap-2">
-                            Back To Top <ArrowUpRight className="w-4 h-4 transform -rotate-45" />
+                        <button onClick={scrollToTop} className="mt-8 md:mt-0 px-6 py-3 rounded-full border border-white/10 hover:border-white hover:text-white transition-all flex items-center gap-3 group text-[10px] tracking-[0.15em]">
+                            BACK TO TOP <ArrowUpRight className="w-3 h-3 transform -rotate-45 group-hover:-translate-y-1 transition-transform" />
                         </button>
                     </MagneticHover>
                 </div>
-            </motion.div>
-        </motion.footer>
+                
+            </div>
+        </footer>
     );
 }

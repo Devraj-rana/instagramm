@@ -4,10 +4,6 @@ import { useState, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Instagram, 
-  Twitter, 
-  Youtube, 
-  Music2, 
   CheckCircle2, 
   ArrowRight, 
   ArrowLeft,
@@ -16,21 +12,39 @@ import {
   Eye,
   MessageSquare,
   CreditCard,
-  Zap
+  Zap,
+  Wallet,
+  Plus
 } from "lucide-react";
+import {
+  FaInstagram,
+  FaWhatsapp,
+  FaThreads,
+  FaFacebookF,
+  FaYoutube,
+  FaTelegram,
+  FaTiktok,
+  FaXTwitter,
+  FaSpotify
+} from "react-icons/fa6";
 
 const PLATFORMS = [
-  { id: "instagram", name: "Instagram", icon: Instagram, color: "from-pink-500 via-purple-500 to-indigo-500" },
-  { id: "tiktok", name: "TikTok", icon: Music2, color: "from-zinc-900 to-zinc-700" },
-  { id: "youtube", name: "YouTube", icon: Youtube, color: "from-red-600 to-red-400" },
-  { id: "twitter", name: "Twitter/X", icon: Twitter, color: "from-blue-400 to-blue-600" },
+  { id: "instagram", name: "Instagram", icon: FaInstagram, color: "from-pink-500 via-purple-500 to-indigo-500" },
+  { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp, color: "from-green-400 to-green-600" },
+  { id: "threads", name: "Threads", icon: FaThreads, color: "from-zinc-900 to-zinc-700" },
+  { id: "facebook", name: "Facebook", icon: FaFacebookF, color: "from-blue-600 to-blue-800" },
+  { id: "youtube", name: "YouTube", icon: FaYoutube, color: "from-red-600 to-red-400" },
+  { id: "telegram", name: "Telegram", icon: FaTelegram, color: "from-blue-400 to-cyan-500" },
+  { id: "tiktok", name: "TikTok", icon: FaTiktok, color: "from-zinc-800 to-black" },
+  { id: "twitter", name: "Twitter/X", icon: FaXTwitter, color: "from-blue-400 to-blue-600" },
+  { id: "spotify", name: "Spotify", icon: FaSpotify, color: "from-green-500 to-emerald-600" },
 ];
 
 const SERVICES = [
-  { id: "followers", name: "Followers", icon: Users, pricePerUnit: 0.02 },
-  { id: "likes", name: "Likes", icon: Heart, pricePerUnit: 0.01 },
-  { id: "views", name: "Views", icon: Eye, pricePerUnit: 0.005 },
-  { id: "comments", name: "Comments", icon: MessageSquare, pricePerUnit: 0.05 },
+  { id: "followers", name: "Followers", icon: Users, pricePerUnit: 1.5 },
+  { id: "likes", name: "Likes", icon: Heart, pricePerUnit: 0.8 },
+  { id: "views", name: "Views", icon: Eye, pricePerUnit: 0.4 },
+  { id: "comments", name: "Comments", icon: MessageSquare, pricePerUnit: 4.0 },
 ];
 
 export default function OrderFlow() {
@@ -95,7 +109,25 @@ export default function OrderFlow() {
             animate={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
-
+        {/* Wallet & Add Funds Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/[0.02] border-b border-white/5 px-6 sm:px-10 py-5">
+          <div className="flex items-center gap-4 w-full sm:w-auto mb-4 sm:mb-0">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
+              <Wallet className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-0.5">Available Balance</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-white">₹0.00</span>
+                <span className="text-sm text-zinc-500 font-medium">INR</span>
+              </div>
+            </div>
+          </div>
+          <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 hover:scale-105 transition-all duration-300">
+            <Plus className="h-4 w-4" />
+            Add Funds
+          </button>
+        </div>
         <div className="p-8 sm:p-12 relative z-10">
           <AnimatePresence mode="wait">
             {/* ... (previous steps remain the same) */}
@@ -111,21 +143,21 @@ export default function OrderFlow() {
                   <h2 className="text-3xl font-black text-white mb-2">Select Platform</h2>
                   <p className="text-zinc-400">Where do you want to grow your presence?</p>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {PLATFORMS.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => { setSelection({ ...selection, platform: p.id }); handleNext(); }}
-                      className={`group relative flex flex-col items-center gap-4 p-6 rounded-3xl border transition-all ${
+                      className={`group relative flex flex-col items-center gap-3 p-4 rounded-3xl border transition-all duration-300 ${
                         selection.platform === p.id 
-                        ? "bg-white/10 border-white/20 shadow-xl" 
-                        : "bg-white/5 border-white/5 hover:border-white/10"
+                        ? "bg-white/10 border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.1)] scale-105" 
+                        : "bg-white/5 border-white/5 hover:border-white/15 hover:bg-white/[0.07]"
                       }`}
                     >
-                      <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white shadow-lg shadow-black/20 group-hover:scale-110 transition-transform`}>
-                        <p.icon className="h-8 w-8" />
+                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white shadow-lg shadow-black/40 group-hover:scale-110 transition-transform duration-300`}>
+                        <p.icon className="h-6 w-6 sm:h-7 sm:w-7" />
                       </div>
-                      <span className="font-bold text-white">{p.name}</span>
+                      <span className="font-semibold text-xs sm:text-sm text-zinc-300 group-hover:text-white transition-colors">{p.name}</span>
                     </button>
                   ))}
                 </div>
@@ -163,7 +195,7 @@ export default function OrderFlow() {
                       </div>
                       <div className="text-left">
                         <h3 className="font-bold text-white text-lg">{s.name}</h3>
-                        <p className="text-zinc-500 text-sm">Starts at ${s.pricePerUnit}/unit</p>
+                          <p className="text-zinc-500 text-sm">Starts at ₹{s.pricePerUnit}/unit</p>
                       </div>
                     </button>
                   ))}
@@ -305,7 +337,7 @@ export default function OrderFlow() {
                     <div className="flex justify-between items-center">
                       <span className="text-xl font-bold text-white">Total Amount</span>
                       <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
-                        ${totalPrice}
+                          ₹{totalPrice}
                       </span>
                     </div>
                   </div>

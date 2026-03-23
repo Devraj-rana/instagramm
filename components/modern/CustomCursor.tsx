@@ -12,12 +12,7 @@ export default function CustomCursor() {
     const pathname = usePathname();
 
     useEffect(() => {
-        // Hide cursor on analyze page if you still want that behavior
-        if (pathname.includes("/analyze")) {
-            document.body.classList.remove("mf-cursor-active");
-            return;
-        }
-
+        // Run the cursor everywhere
         const cursor = new MouseFollower({
             container: document.body,
             speed: 0.5,

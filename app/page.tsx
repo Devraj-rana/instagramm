@@ -17,7 +17,7 @@ export default function Home() {
 
     setIsLoading(true);
     const cleanUsername = username.replace(/^@/, "").trim();
-    router.push(`/analyze/${cleanUsername}`);
+    router.push(`/analytics/${cleanUsername}`);
   };
 
   return (

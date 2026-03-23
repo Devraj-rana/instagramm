@@ -1,192 +1,257 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { TrendingUp, Users, Zap, BarChart3, Shield, Globe } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  ArrowRight,
+  AtSign,
+  BarChart3,
+  CheckCircle2,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Zap,
+} from "lucide-react";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Button } from "@/components/modern/Button";
 
-gsap.registerPlugin(ScrollTrigger);
+const sampleUsernames = ["cristiano", "zendaya", "natgeo"];
 
-export default function AnalyticsPage() {
-    // Refs for GSAP scroll animations
-    const showcaseRef = useRef<HTMLDivElement>(null);
-    const showcaseInnerRef = useRef<HTMLDivElement>(null);
-    const statsRef = useRef<HTMLDivElement>(null);
+const featurePills = [
+  {
+    icon: BarChart3,
+    title: "Score the profile",
+    description: "Review audience quality, profile strength, and content signals in one pass.",
+  },
+  {
+    icon: Target,
+    title: "Find weak spots",
+    description: "See where the account loses momentum and what to improve next.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Fast no-login flow",
+    description: "Analyze a public Instagram profile without connecting your own account.",
+  },
+];
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Showcase section animation
-            if (showcaseInnerRef.current) {
-                gsap.fromTo(showcaseInnerRef.current, {
-                    y: 80,
-                    opacity: 0,
-                    scale: 0.92,
-                }, {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 1.2,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: showcaseRef.current,
-                        start: "top 85%",
-                        end: "top 40%",
-                        toggleActions: "play none none reverse",
-                    },
-                });
-            }
+const auditSteps = [
+  "We fetch the public profile and engagement signals.",
+  "The analyzer scores key categories and content quality.",
+  "You get a summary plus practical next-step recommendations.",
+];
 
-            // Stats counter animation
-            if (statsRef.current) {
-                const statItems = statsRef.current.querySelectorAll(".stat-item");
-                gsap.fromTo(statItems, {
-                    y: 40,
-                    opacity: 0,
-                }, {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.6,
-                    stagger: 0.15,
-                    ease: "back.out(1.7)",
-                    scrollTrigger: {
-                        trigger: statsRef.current,
-                        start: "top 85%",
-                        toggleActions: "play none none reverse",
-                    },
-                });
+export default function AnalyzeIndexPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-                const counters = statsRef.current.querySelectorAll(".stat-number");
-                counters.forEach((counter) => {
-                    const target = parseInt(counter.getAttribute("data-value") || "0");
-                    gsap.fromTo(counter, { textContent: "0" }, {
-                        textContent: target,
-                        duration: 2,
-                        ease: "power2.out",
-                        snap: { textContent: 1 },
-                        scrollTrigger: {
-                            trigger: statsRef.current,
-                            start: "top 85%",
-                            toggleActions: "play none none reverse",
-                        },
-                    });
-                });
-            }
-        });
+  const cleanUsername = useMemo(
+    () => username.replace(/^@/, "").trim().replace(/\s+/g, ""),
+    [username]
+  );
 
-        return () => ctx.revert();
-    }, []);
+  const previewHandle = cleanUsername || "yourhandle";
 
-    return (
-        <div className="flex min-h-screen flex-col bg-[#050505] selection:bg-indigo-500/30 selection:text-indigo-200">
-            <Header />
-            <main className="flex-1 pt-32 sm:pt-40">
-                <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center mb-24">
-                    <h1 className="text-4xl font-display font-extrabold tracking-tight text-white sm:text-6xl drop-shadow-sm mb-6">
-                        Advanced <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-500">Analytics</span> Engine.
-                    </h1>
-                    <p className="mt-6 text-lg leading-8 text-zinc-400 max-w-2xl mx-auto">
-                        Deep dive into your digital presence with our cinema-grade analytics suite. We decode the complex data signals into actionable growth intelligence.
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!cleanUsername) {
+      setError("Enter an Instagram username to continue.");
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9._]+$/.test(cleanUsername)) {
+      setError("Use only letters, numbers, periods, or underscores.");
+      return;
+    }
+
+    setError("");
+    setIsLoading(true);
+    router.push(`/analytics/${cleanUsername}`);
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col bg-[#060606] text-zinc-100 selection:bg-cyan-400/20 selection:text-cyan-100">
+      <Header />
+
+      <main className="relative flex-1 overflow-hidden pt-28 sm:pt-36">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.12),_transparent_35%),radial-gradient(circle_at_80%_20%,_rgba(59,130,246,0.12),_transparent_30%),linear-gradient(180deg,_#070707_0%,_#050505_100%)]" />
+        <div className="absolute left-1/2 top-0 h-[28rem] w-[70rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[140px]" />
+
+        <section className="relative mx-auto grid w-full max-w-7xl gap-14 px-6 pb-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.24em] text-zinc-300">
+              <Sparkles className="h-4 w-4 text-cyan-300" />
+              Instagram Audit
+            </div>
+
+            <h1 className="mt-7 max-w-4xl font-display text-5xl font-black tracking-tight text-white sm:text-6xl lg:text-7xl">
+              Turn any public profile into a clear growth report.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-400">
+              Drop in a username and get an instant AI read on engagement,
+              profile quality, audience signals, and what to improve next.
+            </p>
+
+            <form
+              onSubmit={handleSubmit}
+              className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <label className="group flex h-16 flex-1 items-center gap-4 rounded-[1.25rem] border border-white/10 bg-black/20 px-5 transition-all focus-within:border-cyan-400/40 focus-within:bg-black/30">
+                  <AtSign className="h-5 w-5 text-zinc-500 transition-colors group-focus-within:text-cyan-300" />
+                  <input
+                    type="text"
+                    placeholder="cristiano"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      if (error) {
+                        setError("");
+                      }
+                    }}
+                    className="h-full w-full bg-transparent text-lg font-medium text-white outline-none placeholder:text-zinc-500"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    autoFocus
+                  />
+                </label>
+
+                <Button
+                  type="submit"
+                  disabled={!cleanUsername || isLoading}
+                  className="h-16 rounded-[1.25rem] bg-white px-8 text-base font-bold text-zinc-950 hover:bg-zinc-200"
+                >
+                  {isLoading ? "Starting Analysis..." : "Analyze Profile"}
+                  {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
+                </Button>
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-zinc-300">
+                  Preview: @{previewHandle}
+                </span>
+                <span>Public profiles work best.</span>
+              </div>
+
+              {error && (
+                <p className="mt-4 text-sm font-medium text-rose-300">{error}</p>
+              )}
+
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <span className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-500">
+                  Try one
+                </span>
+                {sampleUsernames.map((sample) => (
+                  <button
+                    key={sample}
+                    type="button"
+                    onClick={() => {
+                      setUsername(sample);
+                      setError("");
+                    }}
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/10 hover:text-white"
+                  >
+                    @{sample}
+                  </button>
+                ))}
+              </div>
+            </form>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              {featurePills.map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-5"
+                >
+                  <div className="mb-4 inline-flex rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3">
+                    <item.icon className="h-5 w-5 text-cyan-300" />
+                  </div>
+                  <h2 className="text-lg font-bold text-white">{item.title}</h2>
+                  <p className="mt-2 text-sm leading-7 text-zinc-400">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-cyan-400/10 via-blue-500/8 to-transparent blur-2xl" />
+
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d0d10]/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+              <div className="flex items-center justify-between border-b border-white/10 pb-5">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-500">
+                    Audit Preview
+                  </p>
+                  <h2 className="mt-2 text-2xl font-black text-white">
+                    @{previewHandle}
+                  </h2>
+                </div>
+                <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">
+                  Ready
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {[
+                  { label: "Overall Score", value: "8.4/10" },
+                  { label: "Engagement Review", value: "Strong" },
+                  { label: "Profile Positioning", value: "Clear" },
+                  { label: "Content Momentum", value: "Improving" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">
+                      {item.label}
                     </p>
+                    <p className="mt-3 text-2xl font-black text-white">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
+                <div className="flex items-center gap-3">
+                  <Zap className="h-5 w-5 text-cyan-300" />
+                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">
+                    What you get
+                  </p>
                 </div>
 
-                {/* Showcase section */}
-                <div ref={showcaseRef} className="relative z-10 pb-32">
-                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                        <div ref={showcaseInnerRef} className="mx-auto max-w-4xl rounded-[2.5rem] bg-zinc-900/20 p-4 ring-1 ring-inset ring-white/5 backdrop-blur-xl opacity-0 overflow-hidden shadow-2xl">
-                            <div className="rounded-[2rem] bg-[#0d0d0f] ring-1 ring-white/5 overflow-hidden flex flex-col items-center justify-center py-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] relative">
-                                <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black z-10 pointer-events-none"></div>
-
-                                <div className="relative z-20 flex flex-col sm:flex-row gap-8 px-10">
-                                    {/* Score Card */}
-                                    <div className="relative w-full sm:w-[340px] rounded-3xl bg-[#0F0F11]/90 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] ring-1 ring-white/10 overflow-hidden group">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                                        
-                                        <div className="p-7 flex flex-col justify-between h-[190px] relative z-10">
-                                            <div className="flex justify-between items-start">
-                                                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 ring-1 ring-white/20">
-                                                    <TrendingUp className="h-6 w-6 text-white drop-shadow-md" />
-                                                </div>
-                                                <div className="flex flex-col items-end">
-                                                    <span className="px-3 py-1.5 text-xs font-bold text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/20 rounded-full flex items-center gap-1.5 shadow-sm shadow-emerald-500/10">
-                                                        <span className="relative flex h-2 w-2">
-                                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                                        </span>
-                                                        +12.5%
-                                                    </span>
-                                                    <span className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold mt-2">Live Trend</span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase mb-1">Impact Score</p>
-                                                <div className="flex items-baseline gap-1 mt-1">
-                                                    <p className="text-5xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400 tracking-tight drop-shadow-sm">8.4</p>
-                                                    <span className="text-xl text-zinc-500 font-bold">/10</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80"></div>
-                                    </div>
-
-                                    {/* Engagement Detail Card */}
-                                    <div className="relative w-full sm:w-[340px] flex flex-col gap-6">
-                                        <div className="relative w-full rounded-2xl bg-[#0F0F11]/90 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] ring-1 ring-white/10 p-6 overflow-hidden group">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -mr-10 -mt-10 transition-opacity group-hover:bg-cyan-500/20 pointer-events-none"></div>
-                                            <div className="flex items-center gap-4 relative z-10 w-full">
-                                                <div className="h-12 w-12 rounded-2xl bg-zinc-800/80 ring-1 ring-white/10 flex items-center justify-center shadow-inner shrink-0 group-hover:scale-105 transition-transform">
-                                                    <Users className="h-6 w-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex justify-between items-center mb-1">
-                                                        <p className="text-white font-bold text-lg leading-tight truncate pr-2">High Retention</p>
-                                                        <Zap className="h-4 w-4 text-amber-400 shrink-0" />
-                                                    </div>
-                                                    <p className="text-cyan-400 text-sm font-semibold truncate">Top 5% Engagement Rate</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="relative w-full rounded-2xl bg-[#0F0F11]/70 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] ring-1 ring-white/5 p-6 border-l-4 border-l-indigo-500">
-                                            <h4 className="text-white font-bold text-sm mb-2 uppercase tracking-widest">Growth Forecast</h4>
-                                            <div className="flex items-end justify-between">
-                                                <p className="text-zinc-400 text-xs">Estimated followers by next month</p>
-                                                <p className="text-2xl font-black text-white">+14,500</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div className="mt-4 space-y-3">
+                  {auditSteps.map((step) => (
+                    <div key={step} className="flex gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-cyan-300" />
+                      <p className="text-sm leading-7 text-zinc-300">{step}</p>
                     </div>
+                  ))}
                 </div>
+              </div>
 
-                {/* Stats Section */}
-                <div ref={statsRef} className="py-32 border-t border-white/5 bg-[#080808]">
-                    <div className="mx-auto max-w-5xl px-6 lg:px-8">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-                            {[
-                                { label: "Profiles Analyzed", value: 12847, suffix: "+" },
-                                { label: "AI Insights Generated", value: 98432, suffix: "+" },
-                                { label: "Avg Score Improvement", value: 34, suffix: "%" },
-                                { label: "Creator Satisfaction", value: 99, suffix: "%" },
-                            ].map((stat, i) => (
-                                <div key={i} className="stat-item text-center flex flex-col items-center gap-4 group">
-                                    <div className="relative">
-                                        <div className="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                        <span className="relative text-4xl sm:text-6xl font-display font-black text-white">
-                                            <span className="stat-number" data-value={stat.value}>0</span>{stat.suffix}
-                                        </span>
-                                    </div>
-                                    <span className="text-sm text-zinc-500 font-bold uppercase tracking-widest">{stat.label}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </main>
-            <Footer />
-        </div>
-    );
+              <div className="mt-6 rounded-[1.5rem] border border-indigo-400/10 bg-gradient-to-br from-indigo-400/10 to-cyan-400/5 p-5">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
+                  Best for
+                </p>
+                <p className="mt-3 text-sm leading-7 text-zinc-300">
+                  Creators, agencies, and brands that want a fast profile check
+                  before making content, pricing, or growth decisions.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
 }
