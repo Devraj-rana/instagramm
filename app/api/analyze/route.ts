@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import type { AnalysisResult, AnalysisAPIResponse } from '@/lib/types';
 import { scrapeInstagramProfile } from '@/lib/instagram-scraper';
@@ -12,23 +13,21 @@ import type { ProfileData } from '@/lib/types';
    ═══════════════════════════════════════════════════ */
 
 // ──── Real AI analysis using DeepSeek-V3.2 via NVIDIA NIM ────
-async function analyzeWithAI(profileData: ProfileData): Promise<Omit<AnalysisResult, 'username' | 'profilePicUrl' | 'fullName' | 'followers' | 'following' | 'postsCount' | 'isVerified'>> {
-    const apiKey = process.env.NVIDIA_API_KEY;
+type NvidiaChatResponse = {
+    choices?: Array<{
+        message?: {
+            content?: string;
+        };
+    }>;
+};
 
-    if (!apiKey) {
+async function analyzeWithAI(profileData: ProfileData): Promise<Omit<AnalysisResult, 'username' | 'profilePicUrl' | 'fullName' | 'followers' | 'following' | 'postsCount' | 'isVerified'>> {
+    if (!process.env.NVIDIA_API_KEY) {
         throw new Error('NVIDIA_API_KEY is not configured');
     }
 
-    const payload = {
-        model: "deepseek-ai/deepseek-v3.2", // Using the specific DeepSeek V3.2 model requested
-        messages: [
-            {
-                role: "system",
-                content: "You are an elite social media growth expert. Analyze the provided Instagram profile data and return a detailed, high-intelligence audit in JSON format. Be critical but constructive. Ensure the JSON strictly follows the required schema."
-            },
-            {
-                role: "user",
-                content: `Analyze this Instagram profile:
+    const systemPrompt = "You are an elite social media growth expert. Analyze the provided Instagram profile data and return a detailed, high-intelligence audit in JSON format. Be critical but constructive. Ensure the JSON strictly follows the required schema.";
+    const userPrompt = `Analyze this Instagram profile:
 Username: @${profileData.username}
 Full Name: ${profileData.fullName}
 Bio: ${profileData.bio}
@@ -45,57 +44,54 @@ Category: ${profileData.categoryName || 'N/A'}
 
 Return a JSON object with this exact structure:
 {
-  "overallScore": number (0-10, one decimal),
-  "summary": "detailed 2-3 sentence overview",
-  "categories": [
-    { "title": "Content Quality", "score": 0-100, "insight": "...", "icon": "📸" },
-    { "title": "Engagement Rate", "score": 0-100, "insight": "...", "icon": "💬" },
-    { "title": "Bio & Profile", "score": 0-100, "insight": "...", "icon": "✍️" },
-    { "title": "Posting Consistency", "score": 0-100, "insight": "...", "icon": "📅" },
-    { "title": "Hashtag Strategy", "score": 0-100, "insight": "...", "icon": "#️⃣" },
-    { "title": "Growth Potential", "score": 0-100, "insight": "...", "icon": "🚀" }
-  ],
-  "improvements": [
-    { "title": "...", "suggestions": ["...", "...", "..."], "priority": "high"|"medium"|"low", "icon": "..." }
-  ]
+    "overallScore": number (0-10, one decimal),
+    "summary": "detailed 2-3 sentence overview",
+    "categories": [
+        { "title": "Content Quality", "score": 0-100, "insight": "...", "icon": "📸" },
+        { "title": "Engagement Rate", "score": 0-100, "insight": "...", "icon": "💬" },
+        { "title": "Bio & Profile", "score": 0-100, "insight": "...", "icon": "✍️" },
+        { "title": "Posting Consistency", "score": 0-100, "insight": "...", "icon": "📅" },
+        { "title": "Hashtag Strategy", "score": 0-100, "insight": "...", "icon": "#️⃣" },
+        { "title": "Growth Potential", "score": 0-100, "insight": "...", "icon": "🚀" }
+    ],
+    "improvements": [
+        { "title": "...", "suggestions": ["...", "...", "..."], "priority": "high"|"medium"|"low", "icon": "..." }
+    ]
 }
-Return ONLY the JSON object, no other text.`
-            }
-        ],
-        max_tokens: 1024,
-        temperature: 0.7,
-        response_format: { type: "json_object" }
-    };
+Return ONLY the JSON object, no other text.`;
 
+    const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            model: 'openai/gpt-oss-120b',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt },
+            ],
+            temperature: 1,
+            top_p: 1,
+            max_tokens: 4096,
+            stream: false,
+        }),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[NVIDIA NIM] Request failed:', response.status, errorText);
+        throw new Error(`NVIDIA API request failed with status ${response.status}`);
+    }
+
+    const completion = await response.json() as NvidiaChatResponse;
+    const content = completion.choices?.[0]?.message?.content;
     try {
-        const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`[NVIDIA NIM] API Error: ${response.status} - ${errorText}`);
-            throw new Error(`AI Analysis failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        const content = data.choices[0].message.content;
-        
-        // Ensure content is valid JSON
-        try {
-            return JSON.parse(content);
-        } catch {
-            console.error("[NVIDIA NIM] JSON Parse Error:", content);
-            throw new Error("Invalid response format from AI");
-        }
-    } catch (error) {
-        console.error(`[NVIDIA NIM] Fetch Error:`, error);
-        throw error;
+        return JSON.parse(content || '{}');
+    } catch {
+        console.error("[NVIDIA NIM] JSON Parse Error:", content);
+        throw new Error("Invalid response format from AI");
     }
 }
 

@@ -25,14 +25,17 @@
     "lucide-react": "^0.577.0",
     "mouse-follower": "^1.1.2",
     "next": "16.1.6",
+    "openai": "^6.32.0",
     "postprocessing": "^6.38.3",
+    "razorpay": "^2.9.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-fast-marquee": "^1.6.5",
     "react-icons": "^5.6.0",
     "resend": "^4.8.0",
     "tailwind-merge": "^3.5.0",
-    "three": "^0.183.2"
+    "three": "^0.183.2",
+    "uid": "^2.0.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Script from "next/script";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -29,26 +30,27 @@ import {
 } from "react-icons/fa6";
 
 const PLATFORMS = [
-  { id: "instagram", name: "Instagram", icon: FaInstagram, color: "from-pink-500 via-purple-500 to-indigo-500" },
-  { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp, color: "from-green-400 to-green-600" },
-  { id: "threads", name: "Threads", icon: FaThreads, color: "from-zinc-900 to-zinc-700" },
-  { id: "facebook", name: "Facebook", icon: FaFacebookF, color: "from-blue-600 to-blue-800" },
-  { id: "youtube", name: "YouTube", icon: FaYoutube, color: "from-red-600 to-red-400" },
-  { id: "telegram", name: "Telegram", icon: FaTelegram, color: "from-blue-400 to-cyan-500" },
-  { id: "tiktok", name: "TikTok", icon: FaTiktok, color: "from-zinc-800 to-black" },
-  { id: "twitter", name: "Twitter/X", icon: FaXTwitter, color: "from-blue-400 to-blue-600" },
-  { id: "spotify", name: "Spotify", icon: FaSpotify, color: "from-green-500 to-emerald-600" },
+  { id: "instagram", name: "Instagram", icon: FaInstagram, color: "from-pink-500 via-purple-500 to-indigo-500", iconClass: "text-white" },
+  { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp, color: "from-green-400 to-green-600", iconClass: "text-white" },
+  { id: "threads", name: "Threads", icon: FaThreads, color: "from-zinc-900 to-zinc-700", iconClass: "text-white" },
+  { id: "facebook", name: "Facebook", icon: FaFacebookF, color: "from-blue-600 to-blue-800", iconClass: "text-white" },
+  { id: "youtube", name: "YouTube", icon: FaYoutube, color: "from-red-600 to-red-400", iconClass: "text-white" },
+  { id: "telegram", name: "Telegram", icon: FaTelegram, color: "from-blue-400 to-cyan-500", iconClass: "text-white" },
+  { id: "tiktok", name: "TikTok", icon: FaTiktok, color: "from-zinc-800 to-black", iconClass: "text-white" },
+  { id: "twitter", name: "Twitter/X", icon: FaXTwitter, color: "from-blue-400 to-blue-600", iconClass: "text-white" },
+  { id: "spotify", name: "Spotify", icon: FaSpotify, color: "from-green-500 to-emerald-600", iconClass: "text-white" },
 ];
 
 const SERVICES = [
-  { id: "followers", name: "Followers", icon: Users, pricePerUnit: 1.5 },
-  { id: "likes", name: "Likes", icon: Heart, pricePerUnit: 0.8 },
-  { id: "views", name: "Views", icon: Eye, pricePerUnit: 0.4 },
-  { id: "comments", name: "Comments", icon: MessageSquare, pricePerUnit: 4.0 },
+  { id: "followers", name: "Followers", icon: Users, pricePerUnit: 1.5, iconClass: "text-cyan-300", activeClass: "group-hover:text-cyan-200 group-hover:bg-cyan-500/20" },
+  { id: "likes", name: "Likes", icon: Heart, pricePerUnit: 0.8, iconClass: "text-pink-300", activeClass: "group-hover:text-pink-200 group-hover:bg-pink-500/20" },
+  { id: "views", name: "Views", icon: Eye, pricePerUnit: 0.4, iconClass: "text-amber-300", activeClass: "group-hover:text-amber-200 group-hover:bg-amber-500/20" },
+  { id: "comments", name: "Comments", icon: MessageSquare, pricePerUnit: 4.0, iconClass: "text-violet-300", activeClass: "group-hover:text-violet-200 group-hover:bg-violet-500/20" },
 ];
 
 export default function OrderFlow() {
   const [step, setStep] = useState(1);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [selection, setSelection] = useState({
     platform: "",
     service: "",
@@ -67,26 +69,103 @@ export default function OrderFlow() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  const loadWalletBalance = async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user) return null;
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("wallet_balance")
+      .eq("id", userData.user.id)
+      .maybeSingle();
+
+    if (profileError || !profile) return userData.user.id;
+
+    setWalletBalance(Number(profile.wallet_balance ?? 0));
+    return userData.user.id;
+  };
+
+  useEffect(() => {
+    void loadWalletBalance();
+  }, []);
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+      // Get current user
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData?.user) {
+        alert("You must be logged in to place an order.");
+        setIsSubmitting(false);
+        return;
+      }
+      const userId = userData.user.id;
+      // Fetch user profile for wallet_balance
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("wallet_balance")
+        .eq("id", userId)
+        .maybeSingle();
+      if (profileError || !profile) {
+        alert("Could not fetch wallet balance. Try again.");
+        setIsSubmitting(false);
+        return;
+      }
+      const balance = parseFloat(profile.wallet_balance);
+      const price = parseFloat(totalPrice);
+      if (balance < price) {
+        alert("Insufficient wallet balance. Please add funds.");
+        setIsSubmitting(false);
+        return;
+      }
+      // Deduct funds
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ wallet_balance: balance - price })
+        .eq("id", userId);
+      if (updateError) {
+        alert("Failed to deduct funds. Try again.");
+        setIsSubmitting(false);
+        return;
+      }
+      setWalletBalance(Number((balance - price).toFixed(2)));
+      // Place order
       const { data, error } = await supabase
         .from('orders')
         .insert([
           {
+            user_id: userId,
             platform: selection.platform,
             service: selection.service,
             quantity: selection.quantity,
             target_username: selection.username,
-            total_price: parseFloat(totalPrice),
+            total_price: price,
             status: 'pending'
           }
         ])
         .select();
-
       if (error) throw error;
-      
       setOrderId(data[0].id);
+      // Send notification email to admin
+      try {
+        await fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            subject: "New Order Placed",
+            html: `<h2>Order Placed</h2>
+              <p>User ID: ${userId}</p>
+              <p>Order ID: ${data[0].id}</p>
+              <p>Platform: ${selection.platform}</p>
+              <p>Service: ${selection.service}</p>
+              <p>Quantity: ${selection.quantity}</p>
+              <p>Target: ${selection.username}</p>
+              <p>Amount: ₹${price}</p>
+              <p>Status: pending</p>
+              <p>Date: ${new Date().toLocaleString()}</p>`
+          })
+        });
+      } catch (e) { /* ignore email errors */ }
       setStep(6);
     } catch (error) {
       console.error("Error submitting order:", error);
@@ -96,37 +175,116 @@ export default function OrderFlow() {
     }
   };
 
+  const handleAddFunds = async () => {
+    const amount = prompt("Enter amount to add (in INR):");
+    if (!amount || isNaN(Number(amount)) || Number(amount) < 10) {
+      return alert("Please enter a valid amount of at least ₹10");
+    }
+
+    try {
+      const userId = await loadWalletBalance();
+      if (!userId) {
+        alert("You must be logged in to add funds.");
+        return;
+      }
+
+      const res = await fetch("/api/razorpay/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: Number(amount) }),
+      });
+      const order = await res.json();
+      if (!order.id) throw new Error("Order creation failed");
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
+        amount: order.amount,
+        currency: order.currency,
+        name: "Social Insight Tech",
+        description: "Add funds to wallet",
+        order_id: order.id,
+        handler: async function (response: any) {
+          const verifyRes = await fetch("/api/razorpay/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: Number(amount),
+              userId,
+            }),
+          });
+          const result = await verifyRes.json();
+          if (result.success) {
+            await loadWalletBalance();
+            alert("Funds added successfully!");
+          } else {
+            alert(result.error || "Payment verification failed.");
+          }
+        },
+        theme: { color: "#4f46e5" },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        alert(`Payment Failed: ${response.error.description}`);
+      });
+      rzp.open();
+    } catch (error) {
+      console.error("Error starting razorpay payment:", error);
+      alert("Something went wrong");
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto py-20 px-6">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       <div className="relative bg-[#0F0F11] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-pink-500/5 pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_br,var(--color-indigo-500)/5,transparent,var(--color-pink-500)/5)] pointer-events-none" />
         
         {/* Progress Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-white/5">
           <motion.div 
-            className="h-full bg-gradient-to-r from-indigo-500 to-pink-500"
+            className="h-full bg-linear-to-r from-indigo-500 to-pink-500"
             initial={{ width: "0%" }}
             animate={{ width: `${(step / 6) * 100}%` }}
           />
         </div>
         {/* Wallet & Add Funds Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/[0.02] border-b border-white/5 px-6 sm:px-10 py-5">
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/2 border-b border-white/5 px-6 sm:px-10 py-5">
           <div className="flex items-center gap-4 w-full sm:w-auto mb-4 sm:mb-0">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
+            <div className="h-12 w-12 rounded-2xl bg-[linear-gradient(to_br,var(--color-green-500)/20,var(--color-emerald-500)/10)] border border-green-500/20 flex items-center justify-center text-green-400">
               <Wallet className="h-6 w-6" />
             </div>
             <div>
               <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-0.5">Available Balance</p>
-              <div className="flex items-baseline gap-1">
+              <div className="hidden">
                 <span className="text-2xl font-black text-white">₹0.00</span>
                 <span className="text-sm text-zinc-500 font-medium">INR</span>
               </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-white">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(walletBalance)}</span>
+              </div>
             </div>
           </div>
-          <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 hover:scale-105 transition-all duration-300">
-            <Plus className="h-4 w-4" />
-            Add Funds
-          </button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button 
+              onClick={handleAddFunds}
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 hover:scale-105 transition-all duration-300"
+            >
+              <Plus className="h-4 w-4" />
+              Add Funds
+            </button>
+            <a
+              href="/account"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 text-white font-bold hover:bg-cyan-700 hover:scale-105 transition-all duration-300"
+              style={{ textDecoration: 'none' }}
+            >
+              <Wallet className="h-4 w-4" />
+              My Orders
+            </a>
+          </div>
         </div>
         <div className="p-8 sm:p-12 relative z-10">
           <AnimatePresence mode="wait">
@@ -154,8 +312,8 @@ export default function OrderFlow() {
                         : "bg-white/5 border-white/5 hover:border-white/15 hover:bg-white/[0.07]"
                       }`}
                     >
-                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white shadow-lg shadow-black/40 group-hover:scale-110 transition-transform duration-300`}>
-                        <p.icon className="h-6 w-6 sm:h-7 sm:w-7" />
+                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg shadow-black/40 group-hover:scale-110 transition-transform duration-300`}>
+                        <p.icon className={`h-6 w-6 sm:h-7 sm:w-7 ${p.iconClass}`} />
                       </div>
                       <span className="font-semibold text-xs sm:text-sm text-zinc-300 group-hover:text-white transition-colors">{p.name}</span>
                     </button>
@@ -190,7 +348,7 @@ export default function OrderFlow() {
                         : "bg-white/5 border-white/5 hover:border-white/10"
                       }`}
                     >
-                      <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-indigo-400 group-hover:text-white group-hover:bg-indigo-500 transition-all">
+                      <div className={`h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-all ${s.iconClass} ${s.activeClass}`}>
                         <s.icon className="h-6 w-6" />
                       </div>
                       <div className="text-left">
@@ -306,7 +464,7 @@ export default function OrderFlow() {
                   <p className="text-zinc-400">Review your dynamic growth package</p>
                 </div>
 
-                <div className="bg-white/5 rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl max-w-md mx-auto">
+                <div className="bg-white/5 rounded-4xl border border-white/10 overflow-hidden shadow-2xl max-w-md mx-auto">
                   <div className="p-8 space-y-6">
                     <div className="flex justify-between items-center text-sm font-bold text-zinc-500 uppercase tracking-widest">
                       <span>Package Details</span>
@@ -332,11 +490,11 @@ export default function OrderFlow() {
                       </div>
                     </div>
 
-                    <div className="h-[1px] bg-white/10" />
+                    <div className="h-px bg-white/10" />
 
                     <div className="flex justify-between items-center">
                       <span className="text-xl font-bold text-white">Total Amount</span>
-                      <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">
+                      <span className="text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-pink-500">
                           ₹{totalPrice}
                       </span>
                     </div>
@@ -345,7 +503,7 @@ export default function OrderFlow() {
                   <button 
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="w-full py-6 bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-black text-xl flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
+                    className="w-full py-6 bg-linear-to-r from-indigo-500 to-pink-500 text-white font-black text-xl flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <div className="h-6 w-6 border-4 border-white border-t-transparent rounded-full animate-spin" />

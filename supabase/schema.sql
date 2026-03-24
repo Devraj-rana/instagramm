@@ -7,6 +7,8 @@ create table profiles (
   avatar_url text,
   website text,
 
+  wallet_balance decimal(10,2) not null default 0,
+
   constraint username_length check (char_length(username) >= 3)
 );
 
