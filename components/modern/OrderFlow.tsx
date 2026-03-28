@@ -6,12 +6,10 @@ import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
-  ArrowRight,
   Users,
   Heart,
   Eye,
   MessageSquare,
-  CreditCard,
   Zap,
   Wallet,
   Plus,
@@ -20,19 +18,6 @@ import {
   Search,
   Loader2,
   Info,
-  Instagram,
-  Youtube,
-  Music,
-  Facebook,
-  Twitter,
-  Send,
-  Linkedin,
-  Disc,
-  AtSign,
-  Play,
-  Twitch,
-  Music2,
-  Share2,
   ShieldCheck,
   Globe,
   RefreshCw
@@ -253,7 +238,6 @@ export default function OrderFlow() {
   const [isQuickServiceOpen, setIsQuickServiceOpen] = useState(false);
   const [quickServiceSearch, setQuickServiceSearch] = useState("");
   const [platformSearch, setPlatformSearch] = useState("");
-  const [catSearch, setCatSearch] = useState("");
   const [serviceSearch, setServiceSearch] = useState("");
 
   const filteredPlatforms = useMemo(() => 
@@ -287,8 +271,6 @@ export default function OrderFlow() {
     ));
   }, [selection.platform]);
 
-  const filteredCategories = categories.filter(c => c.toLowerCase().includes(catSearch.toLowerCase()));
-
   const selectedService = useMemo(() => SERVICES.find(s => s.id === selection.serviceId), [selection.serviceId]);
   const availableServices = useMemo(() => {
     return SERVICES.filter(s => 
@@ -303,7 +285,6 @@ export default function OrderFlow() {
   }, [selectedService, selection.quantity]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
 
   const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState<string>("50");
@@ -505,7 +486,6 @@ export default function OrderFlow() {
         .select();
 
       if (error) throw error;
-      setOrderId(data[0].id);
 
       // Financial Log
       await supabase
@@ -533,7 +513,7 @@ export default function OrderFlow() {
   };
 
   const executeAddFunds = async () => {
-    let amountStr = topUpAmount.trim();
+    const amountStr = topUpAmount.trim();
     if (!amountStr) return;
     const amount = Math.floor(Number(amountStr));
     if (isNaN(amount) || amount < 10) return alert("Min. ₹10");
@@ -553,14 +533,18 @@ export default function OrderFlow() {
       });
       const order = await res.json();
 
+      if (!res.ok || !order?.id) {
+        throw new Error(order?.error || "Unable to create payment order.");
+      }
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
-        name: "SMM Dashboard",
+        name: "Social - Insight",
         description: "Wallet Top-up",
         order_id: order.id,
-        handler: async function (response: any) {
+        handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
           const verifyRes = await fetch("/api/razorpay/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -576,7 +560,9 @@ export default function OrderFlow() {
           if (result.success) {
             await loadWalletBalance();
             setIsTopUpModalOpen(false);
-            alert("Funds added!");
+            alert(`Funds added! New credit: ₹${result.creditedAmount ?? amount}`);
+          } else {
+            alert(result.error || "Payment verified failed. Please contact support.");
           }
           setIsProcessingPayment(false);
         },
@@ -584,7 +570,8 @@ export default function OrderFlow() {
         theme: { color: "#4f46e5" },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const RazorpayConstructor = (window as unknown as { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay;
+      const rzp = new RazorpayConstructor(options);
       rzp.open();
     } catch (error) {
       console.error("Payment error:", error);
@@ -599,7 +586,7 @@ export default function OrderFlow() {
       {/* Top Up Modal */}
       <AnimatePresence>
         {isTopUpModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -608,46 +595,83 @@ export default function OrderFlow() {
               className="absolute inset-0 bg-black/80 backdrop-blur-xl"
             />
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-sm rounded-2xl border border-zinc-700 bg-zinc-950 p-6 shadow-2xl"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-sm rounded-[2.5rem] bg-[#0A0A0C] border border-white/5 shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden"
             >
-              <div className="space-y-5">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-indigo-500/15 flex items-center justify-center">
-                    <Wallet className="h-5 w-5 text-indigo-400" />
+              {/* Dynamic Background Glows */}
+              <div className="absolute -top-24 -left-24 w-56 h-56 bg-indigo-500/20 blur-[60px] rounded-full pointer-events-none" />
+              <div className="absolute -bottom-24 -right-24 w-56 h-56 bg-purple-500/20 blur-[60px] rounded-full pointer-events-none" />
+              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-overlay pointer-events-none"></div>
+
+              <div className="relative z-10 py-10 px-8 flex flex-col items-center">
+                {/* Icon & Title */}
+                <div className="flex flex-col items-center mb-10 relative w-full">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-indigo-500/20 blur-2xl rounded-full" />
+                  <div className="h-16 w-16 mb-5 rounded-full bg-linear-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.5)] relative z-10 border border-white/20">
+                    <Wallet className="h-7 w-7 text-white" />
                   </div>
-                  <div>
-                    <h2 className="text-lg font-black text-white uppercase">Add Funds</h2>
-                    <p className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Minimum amount: 10 INR</p>
-                  </div>
+                  <h2 className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-white to-zinc-400 tracking-widest uppercase text-center relative z-10">Add Funds</h2>
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-2 text-center">Minimum Top-up: ₹10</p>
                 </div>
 
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-black">INR</span>
-                  <input
-                    type="text"
-                    value={topUpAmount}
-                    onChange={(e) => setTopUpAmount(e.target.value.replace(/[^0-9]/g, ''))}
-                    className="w-full h-12 bg-zinc-900 border border-zinc-700 rounded-xl pl-14 pr-4 text-xl font-black text-white outline-none focus:ring-2 focus:ring-indigo-500/40"
-                    placeholder="0"
-                  />
+                {/* Massive Input */}
+                <div className="w-full relative mb-10 flex flex-col items-center justify-center group">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-3xl text-zinc-600 font-black group-focus-within:text-indigo-400 transition-colors duration-500">₹</span>
+                    <input
+                      type="text"
+                      value={topUpAmount}
+                      onChange={(e) => setTopUpAmount(e.target.value.replace(/[^0-9]/g, ''))}
+                      className="w-45 bg-transparent text-6xl font-black text-white outline-none text-center placeholder:text-zinc-800 tracking-tighter"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="h-0.5 w-32 bg-linear-to-r from-transparent via-zinc-800 to-transparent mt-3 group-focus-within:via-indigo-500 transition-all duration-500" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setIsTopUpModalOpen(false)}
-                    className="h-11 rounded-xl border border-zinc-700 text-zinc-300 font-black uppercase text-xs hover:bg-zinc-900 transition-all"
-                  >
-                    Cancel
-                  </button>
+                {/* Amount Pills */}
+                <div className="grid grid-cols-4 gap-2 w-full mb-10">
+                  {[100, 500, 1000, 5000].map(amount => {
+                    const isSelected = topUpAmount === amount.toString();
+                    return (
+                      <button
+                        key={amount}
+                        className={`h-12 rounded-2xl text-[11px] font-black transition-all uppercase tracking-wider relative overflow-hidden flex items-center justify-center ${
+                          isSelected 
+                            ? 'text-white border-none shadow-[0_0_20px_rgba(99,102,241,0.3)]' 
+                            : 'bg-white/2 border border-white/5 text-zinc-500 hover:bg-white/10 hover:text-white hover:border-white/10'
+                        }`}
+                        onClick={() => setTopUpAmount(amount.toString())}
+                      >
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-500 opacity-100" />
+                        )}
+                        <span className="relative z-10">{amount}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="w-full space-y-4">
                   <button
                     onClick={executeAddFunds}
                     disabled={isProcessingPayment || !topUpAmount || Number(topUpAmount) < 10}
-                    className="h-11 rounded-xl bg-white text-black font-black uppercase text-xs hover:bg-zinc-200 transition-all disabled:opacity-20"
+                    className="w-full h-14 rounded-2xl bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-black uppercase tracking-widest text-xs hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed shadow-[0_10px_40px_-10px_rgba(168,85,247,0.8)] flex items-center justify-center relative overflow-hidden group"
                   >
-                    {isProcessingPayment ? <Loader2 className="animate-spin h-5 w-5 mx-auto" /> : "Proceed"}
+                    <div className="absolute inset-0 bg-white/20 -translate-y-full group-hover:translate-y-full transition-transform duration-700 ease-in-out" />
+                    <span className="relative z-10 flex items-center gap-2">
+                       {isProcessingPayment ? <Loader2 className="animate-spin h-5 w-5" /> : "Initialize Payment"}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setIsTopUpModalOpen(false)}
+                    className="w-full h-12 rounded-2xl text-zinc-500 font-bold uppercase tracking-widest text-[10px] hover:text-white transition-colors"
+                  >
+                    Cancel Connection
                   </button>
                 </div>
               </div>
@@ -658,7 +682,7 @@ export default function OrderFlow() {
 
       {/* Main Dashboard UI */}
       <div className="bg-[#0F0F11] border border-white/10 rounded-[3rem] shadow-2xl relative">
-        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/[0.02] border-b border-white/5 px-8 sm:px-12 py-8 gap-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/2 border-b border-white/5 px-8 sm:px-12 py-8 gap-6">
           <div className="flex items-center gap-6">
             <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
               <Zap className="h-7 w-7" />
@@ -707,7 +731,7 @@ export default function OrderFlow() {
                       </div>
 
                       {isQuickServiceOpen && quickServiceSearch.trim() && (
-                        <div data-lenis-prevent className="absolute top-full left-0 right-0 mt-2 bg-[#111114] border border-white/10 rounded-2xl p-2 z-[70] shadow-2xl max-h-72 overflow-y-auto overscroll-contain custom-scrollbar">
+                        <div data-lenis-prevent className="absolute top-full left-0 right-0 mt-2 bg-[#111114] border border-white/10 rounded-2xl p-2 z-70 shadow-2xl max-h-72 overflow-y-auto overscroll-contain custom-scrollbar">
                           {quickServiceResults.length > 0 ? (
                             quickServiceResults.map((s) => (
                               <button
@@ -751,7 +775,7 @@ export default function OrderFlow() {
                           setIsCategoryOpen(false);
                           setIsServiceOpen(false);
                         }}
-                        className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between text-white hover:bg-white/[0.08] transition-all"
+                        className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between text-white hover:bg-white/8 transition-all"
                       >
                         <div className="flex items-center gap-4">
                           {selectedPlatformData && (
@@ -769,7 +793,7 @@ export default function OrderFlow() {
                       </button>
 
                       {isPlatformOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-3 bg-[#111114] border border-white/10 rounded-2xl z-[60] shadow-2xl overflow-hidden">
+                        <div className="absolute top-full left-0 right-0 mt-3 bg-[#111114] border border-white/10 rounded-2xl z-60 shadow-2xl overflow-hidden">
                           <div className="p-4 border-b border-white/5 bg-white/2">
                             <div className="relative">
                               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
@@ -820,7 +844,7 @@ export default function OrderFlow() {
                         <ChevronDown className={`h-5 w-5 transition-transform ${isCategoryOpen ? "rotate-180" : ""}`} />
                       </button>
                       {isCategoryOpen && (
-                        <div data-lenis-prevent className="absolute top-full left-0 right-0 mt-2 bg-[#111114] border border-white/10 rounded-2xl p-2 z-[55] shadow-2xl overflow-hidden">
+                        <div data-lenis-prevent className="absolute top-full left-0 right-0 mt-2 bg-[#111114] border border-white/10 rounded-2xl p-2 z-55 shadow-2xl overflow-hidden">
                           {categories.map(cat => (
                             <button key={cat} onClick={() => { setSelection({ ...selection, category: cat, serviceId: "" }); setIsCategoryOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl hover:bg-white/5 text-zinc-400 hover:text-white font-black uppercase text-xs">
                               {cat}
@@ -909,7 +933,7 @@ export default function OrderFlow() {
                 </div>
 
                 <div className="lg:col-span-2">
-                  <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-8 h-full min-h-[400px]">
+                  <div className="bg-white/2 border border-white/5 rounded-4xl p-8 h-full min-h-[400px]">
                     <div className="flex items-center gap-3 mb-8">
                       <Info className="h-5 w-5 text-indigo-400" />
                       <h3 className="text-xs font-black text-white uppercase tracking-widest">Instance Details</h3>
@@ -936,7 +960,7 @@ export default function OrderFlow() {
         </div>
 
         {/* Features / Trust Section */}
-        <div className="bg-white/[0.01] border-t border-white/5 p-8 sm:px-12">
+        <div className="bg-white/1 border-t border-white/5 p-8 sm:px-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors group">
               <div className="h-10 w-10 shrink-0 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/10 group-hover:scale-110 transition-transform">

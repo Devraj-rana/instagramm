@@ -3,6 +3,7 @@ import {
   ArrowRight,
   BadgeHelp,
   Clock3,
+  Instagram,
   LifeBuoy,
   Mail,
   ShieldCheck,
@@ -42,6 +43,16 @@ const supportChannels = [
     actionHref: "mailto:support@socialinsight.tech?subject=Security%20Concern",
     accent: "from-emerald-400/30 to-cyan-500/10",
     iconColor: "text-emerald-300",
+  },
+  {
+    icon: Instagram,
+    title: "Instagram",
+    description:
+      "Follow and message us on Instagram for updates and quick social support touchpoints.",
+    actionLabel: "@socialinsight.tech",
+    actionHref: "https://www.instagram.com/socialinsight.tech/",
+    accent: "from-pink-400/30 to-orange-500/10",
+    iconColor: "text-pink-300",
   },
 ];
 

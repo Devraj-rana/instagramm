@@ -1,43 +1,133 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, LogOut, Settings } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+    ChevronRight,
+    LogOut,
+    Settings,
+    Menu,
+    X,
+    Home as HomeIcon,
+    BarChart3,
+    Sparkles,
+    Headset,
+    MessageSquareQuote,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { AuthChangeEvent, Session as SupabaseSession } from "@supabase/supabase-js";
 
+// Use real routes instead of on-page anchors so navigation works from anywhere.
+const NAV_ITEMS = [
+    { label: "Home", href: "/", icon: HomeIcon },
+    { label: "Analytics", href: "/analytics", icon: BarChart3 },
+    { label: "Services", href: "/services", icon: Sparkles },
+    { label: "Support", href: "/support", icon: Headset },
+    { label: "Testimonials", href: "/testimonials", icon: MessageSquareQuote },
+];
+
 export default function Header() {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
+
+    // Prevent body scroll when the menu is open on mobile.
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            const original = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+            return () => {
+                document.body.style.overflow = original;
+            };
+        }
+    }, [isMobileMenuOpen]);
+
+    const isActive = (href: string) => {
+        if (href === "/") return pathname === "/";
+        return pathname.startsWith(href);
+    };
+
     return (
-        <motion.header
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20, duration: 0.8 }}
-            className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
-        >
-            <div className="pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-4xl border border-white/10 bg-[#121214]/60 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all hover:bg-[#121214]/80 hover:shadow-[0_8px_40px_rgba(99,102,241,0.15)] ring-1 ring-white/5">
-                <Link href="/" className="group flex items-center gap-3">
-                    <Logo />
-                </Link>
+        <>
+            <motion.header
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20, duration: 0.8 }}
+                className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+            >
+                <div className="pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-4xl border border-white/10 bg-[#121214]/60 px-4 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-2xl transition-all hover:bg-[#121214]/80 hover:shadow-[0_8px_40px_rgba(99,102,241,0.15)] ring-1 ring-white/5">
+                    <Link href="/" className="group flex items-center gap-3">
+                        <Logo />
+                    </Link>
 
-                <nav className="hidden md:flex items-center gap-1 rounded-full bg-white/5 p-1 shadow-inner ring-1 ring-white/10">
-                    {["Home", "Analytics", "Services", "Support", "Testimonials"].map((item) => (
-                        <Link
-                            key={item}
-                            href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                            className="relative px-5 py-2 text-sm font-bold text-zinc-400 transition-colors hover:text-white group rounded-full hover:bg-white/10 overflow-hidden"
+                    <nav className="hidden md:flex items-center gap-1 rounded-full bg-white/5 p-1 shadow-inner ring-1 ring-white/10">
+                        {NAV_ITEMS.map((item) => (
+                            <Link
+                                key={item.label}
+                                href={item.href}
+                                className={`relative px-5 py-2 text-sm font-bold transition-colors rounded-full overflow-hidden ${
+                                    isActive(item.href) ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/10"
+                                }`}
+                            >
+                                <span className="relative z-10">{item.label}</span>
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white transition-all hover:bg-white/10 md:hidden"
+                            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                            aria-label="Toggle navigation"
                         >
-                            <span className="relative z-10">{item}</span>
-                        </Link>
-                    ))}
-                </nav>
-
-                <div className="flex items-center gap-4">
-                    <AuthButton />
+                            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                        </button>
+                        <AuthButton />
+                    </div>
                 </div>
-            </div>
-        </motion.header>
+
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 0.6 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-30 bg-black md:hidden"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            />
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.18 }}
+                                className="pointer-events-auto fixed left-4 right-4 top-20 z-40 rounded-3xl border border-white/10 bg-[#0c0c0f]/95 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.55)] backdrop-blur-2xl md:hidden"
+                            >
+                                <div className="flex flex-col divide-y divide-white/5">
+                                    {NAV_ITEMS.map((item) => (
+                                        <Link
+                                            key={item.label}
+                                            href={item.href}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="flex items-center justify-between py-3 text-base font-semibold text-white transition-colors hover:text-indigo-200"
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                <item.icon className="h-4 w-4 text-zinc-400" />
+                                                {item.label}
+                                            </span>
+                                            <ChevronRight className="h-4 w-4 text-zinc-500" />
+                                        </Link>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
+            </motion.header>
+
+        </>
     );
 }
 

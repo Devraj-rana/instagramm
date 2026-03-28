@@ -2,6 +2,8 @@ import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#050505] selection:bg-cyan-500/30 selection:text-cyan-100">

@@ -16,7 +16,8 @@ import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import { Button } from "@/components/modern/Button";
 
-const sampleUsernames = ["narendramodi", "indiaofficial"];
+// "Try one" quick picks shown below the form. Keep Modi; add Instagram and Meta.
+const sampleUsernames = ["narendramodi", "instagram", "meta"];
 
 const featurePills = [
   {
