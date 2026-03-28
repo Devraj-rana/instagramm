@@ -13,18 +13,26 @@ export async function PATCH(
 
   const { id } = await context.params;
   const body = await request.json();
-  const walletBalance = Number(body.walletBalance);
+  const updates: Record<string, any> = { updated_at: new Date().toISOString() };
 
-  if (!Number.isFinite(walletBalance) || walletBalance < 0) {
-    return NextResponse.json({ success: false, error: "Invalid wallet balance." }, { status: 400 });
+  if (body.walletBalance !== undefined) {
+    const walletBalance = Number(body.walletBalance);
+    if (!Number.isFinite(walletBalance) || walletBalance < 0) {
+      return NextResponse.json({ success: false, error: "Invalid wallet balance." }, { status: 400 });
+    }
+    updates.wallet_balance = Number(walletBalance.toFixed(2));
+  }
+
+  if (body.status !== undefined) {
+    if (!["pending", "completed"].includes(body.status)) {
+      return NextResponse.json({ success: false, error: "Invalid status value." }, { status: 400 });
+    }
+    updates.status = body.status;
   }
 
   const { error } = await supabaseAdmin
     .from("profiles")
-    .update({
-      wallet_balance: Number(walletBalance.toFixed(2)),
-      updated_at: new Date().toISOString(),
-    })
+    .update(updates)
     .eq("id", id);
 
   if (error) {

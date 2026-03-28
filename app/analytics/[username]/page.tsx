@@ -146,12 +146,16 @@ export default function AnalysisResultsPage() {
                             transition={{ duration: 0.5, staggerChildren: 0.1 }}
                             className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"
                         >
-                            <div className="mb-8 flex items-center justify-between">
+                            <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div>
                                     <h1 className="text-3xl font-display font-bold text-white drop-shadow-sm">Profile Audit</h1>
                                     <p className="text-zinc-400">AI-generated insights and metrics.</p>
                                 </div>
-                                <Button onClick={() => router.push("/")} variant="outline" className="hidden sm:flex">
+                                <Button 
+                                    onClick={() => router.push("/analytics")} 
+                                    variant="outline" 
+                                    className="w-full sm:w-auto border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20"
+                                >
                                     Analyze Another
                                 </Button>
                             </div>
@@ -310,7 +314,12 @@ export default function AnalysisResultsPage() {
 
                             {/* Bottom Nav */}
                             <div className="mt-12 flex justify-center pb-12 sm:hidden">
-                                <Button onClick={() => router.push("/")} variant="outline" size="lg" className="w-full">
+                                <Button 
+                                    onClick={() => router.push("/analytics")} 
+                                    variant="outline" 
+                                    size="lg" 
+                                    className="w-full border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20"
+                                >
                                     Analyze Another Profile
                                 </Button>
                             </div>

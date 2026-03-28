@@ -4,10 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Script from "next/script";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  CheckCircle2, 
-  ArrowRight, 
-  ArrowLeft,
+import {
+  CheckCircle2,
+  ArrowRight,
   Users,
   Heart,
   Eye,
@@ -15,59 +14,160 @@ import {
   CreditCard,
   Zap,
   Wallet,
-  Plus
+  Plus,
+  ChevronRight,
+  ChevronDown,
+  Search,
+  Loader2,
+  Info,
+  Instagram,
+  Youtube,
+  Music,
+  Facebook,
+  Twitter,
+  Send,
+  Linkedin,
+  Disc,
+  AtSign,
+  Play,
+  Twitch,
+  Music2,
+  Share2,
+  ShieldCheck,
+  Globe,
+  RefreshCw
 } from "lucide-react";
-import {
-  FaInstagram,
-  FaWhatsapp,
-  FaThreads,
-  FaFacebookF,
-  FaYoutube,
-  FaTelegram,
-  FaTiktok,
-  FaXTwitter,
-  FaSpotify
-} from "react-icons/fa6";
 
 const PLATFORMS = [
-  { id: "instagram", name: "Instagram", icon: FaInstagram, color: "from-pink-500 via-purple-500 to-indigo-500", iconClass: "text-white" },
-  { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp, color: "from-green-400 to-green-600", iconClass: "text-white" },
-  { id: "threads", name: "Threads", icon: FaThreads, color: "from-zinc-900 to-zinc-700", iconClass: "text-white" },
-  { id: "facebook", name: "Facebook", icon: FaFacebookF, color: "from-blue-600 to-blue-800", iconClass: "text-white" },
-  { id: "youtube", name: "YouTube", icon: FaYoutube, color: "from-red-600 to-red-400", iconClass: "text-white" },
-  { id: "telegram", name: "Telegram", icon: FaTelegram, color: "from-blue-400 to-cyan-500", iconClass: "text-white" },
-  { id: "tiktok", name: "TikTok", icon: FaTiktok, color: "from-zinc-800 to-black", iconClass: "text-white" },
-  { id: "twitter", name: "Twitter/X", icon: FaXTwitter, color: "from-blue-400 to-blue-600", iconClass: "text-white" },
-  { id: "spotify", name: "Spotify", icon: FaSpotify, color: "from-green-500 to-emerald-600", iconClass: "text-white" },
+  { id: "instagram", name: "Instagram", logo: "instagram", color: "from-pink-500 to-orange-500" },
+  { id: "youtube", name: "YouTube", logo: "youtube", color: "from-red-600 to-red-500" },
+  { id: "tiktok", name: "TikTok", logo: "tiktok", color: "from-zinc-800 to-zinc-900" },
+  { id: "facebook", name: "Facebook", logo: "facebook", color: "from-blue-600 to-blue-500" },
+  { id: "twitter", name: "Twitter / X", logo: "x", color: "from-zinc-800 to-zinc-900" },
+  { id: "telegram", name: "Telegram", logo: "telegram", color: "from-sky-400 to-sky-300" },
+  { id: "linkedin", name: "LinkedIn", logo: "linkedin", color: "from-blue-700 to-blue-600" },
+  { id: "spotify", name: "Spotify", logo: "spotify", color: "from-green-500 to-green-400" },
+  { id: "twitch", name: "Twitch", logo: "twitch", color: "from-purple-600 to-purple-500" },
+  { id: "discord", name: "Discord", logo: "discord", color: "from-indigo-600 to-indigo-500" },
+  { id: "reddit", name: "Reddit", logo: "reddit", color: "from-orange-600 to-orange-500" },
+  { id: "soundcloud", name: "SoundCloud", logo: "soundcloud", color: "from-orange-500 to-orange-400" },
+  { id: "threads", name: "Threads", logo: "threads", color: "from-zinc-100 to-zinc-400" },
 ];
 
+/** 
+ * PROFESSIONAL SERVICE DEFINITIONS
+ */
 const SERVICES = [
-  { id: "followers", name: "Followers", icon: Users, pricePerUnit: 1.5, iconClass: "text-cyan-300", activeClass: "group-hover:text-cyan-200 group-hover:bg-cyan-500/20" },
-  { id: "likes", name: "Likes", icon: Heart, pricePerUnit: 0.8, iconClass: "text-pink-300", activeClass: "group-hover:text-pink-200 group-hover:bg-pink-500/20" },
-  { id: "views", name: "Views", icon: Eye, pricePerUnit: 0.4, iconClass: "text-amber-300", activeClass: "group-hover:text-amber-200 group-hover:bg-amber-500/20" },
-  { id: "comments", name: "Comments", icon: MessageSquare, pricePerUnit: 4.0, iconClass: "text-violet-300", activeClass: "group-hover:text-violet-200 group-hover:bg-violet-500/20" },
+  {
+    id: "followers",
+    id_num: "1024",
+    name: "Followers | High Quality | 400K-500K/Day",
+    category: "Followers",
+    icon: Users,
+    pricePerUnit: 0.15,
+    platform: "instagram",
+    description: `✨Service Grade - Ⓐ+ Grade\n✨No Overload Issue\n✨Working very smooth\n✨Discount Available For APis\n\n➕Addition Information\n\nStart - 0 -1 Minutes\n\nSpeed After Start - 400K - 500K/Day\n\nQuality - Very High\n\nDrop - No Drop Issue\n\nRefill - Lifetime\n\nCancel - Button Working\n\nLink - Profile Link\n\nCorrect Format - https://www.instagram.com/your_username/\n\nSpecial Note: Account should be public. Please do not change your username during the process.`
+  },
+  {
+    id: "likes",
+    id_num: "2055",
+    name: "Likes | Real & Fast | Instant",
+    category: "Likes",
+    icon: Heart,
+    pricePerUnit: 0.08,
+    platform: "instagram",
+    description: `✨Service Grade - Ⓐ\n✨Instant Start\n✨High Quality Accounts\n✨Non Drop\n\nLink - Post Link`
+  },
+  {
+    id: "views",
+    id_num: "1167",
+    name: "Views | Instant Complete | 10Million/Day",
+    category: "Views",
+    icon: Eye,
+    pricePerUnit: 0.001,
+    platform: "instagram",
+    description: `🔴Read Description before order\n\n📈Service Grade - Ⓐ+\n✨Use If You wants Instant Views\n✨Cancel button working in this service\n✨This Service Always Works\n\n➕Addition Information\n\nStart - in one Click\n\nSpeed After Start - Approx 10 Million/Day\n\nDrop Ratio - Non Drop\n\nRefill - Possible if less deliver\n\nCancel - Available\n\nLink - Reel Link`
+  },
+  {
+    id: "views_premium",
+    id_num: "1406",
+    name: "Views | Premium | Best for Big Orders",
+    category: "Views",
+    icon: Eye,
+    pricePerUnit: 0.002,
+    platform: "instagram",
+    description: `📈Service Grade - A+\n✨Best for Big Orders\n✨Mostly Instant Start\n✨Cancel Button Working\n✨ Instant Support Available\n\n➕Addition Information\n\nStart - Instantly Normally\n\nSpeed After Start - Approx 1Million/Day\n\nDrop Ratio - Non Drop\n\nRefill - Possible if less deliver\n\nCancel - Possible\n\nLink - Reel Link`
+  },
+  {
+    id: "comments",
+    id_num: "3012",
+    name: "Comments | Custom Text | High Grade",
+    category: "Comments",
+    icon: MessageSquare,
+    pricePerUnit: 4.0,
+    platform: "instagram",
+    description: `✨Custom Comments\n✨High Quality Profiles\n✨Instant Start`
+  },
 ];
 
 export default function OrderFlow() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // 1: Form, 2: Success
   const [walletBalance, setWalletBalance] = useState(0);
+
   const [selection, setSelection] = useState({
-    platform: "",
-    service: "",
+    platform: "instagram",
+    category: "",
+    serviceId: "",
     quantity: 100,
     username: "",
   });
 
-  const totalPrice = useMemo(() => {
-    const service = SERVICES.find(s => s.id === selection.service);
-    return service ? (service.pricePerUnit * selection.quantity).toFixed(2) : "0.00";
-  }, [selection.service, selection.quantity]);
+  const [isPlatformOpen, setIsPlatformOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isServiceOpen, setIsServiceOpen] = useState(false);
+  const [platformSearch, setPlatformSearch] = useState("");
+  const [catSearch, setCatSearch] = useState("");
+  const [serviceSearch, setServiceSearch] = useState("");
 
-  const handleNext = () => setStep(s => s + 1);
-  const handleBack = () => setStep(s => s - 1);
+  const filteredPlatforms = useMemo(() => 
+    PLATFORMS.filter(p => p.name.toLowerCase().includes(platformSearch.toLowerCase())), 
+    [platformSearch]
+  );
+
+  const selectedPlatformData = useMemo(() => 
+    PLATFORMS.find(p => p.id === selection.platform), 
+    [selection.platform]
+  );
+
+  const categories = useMemo(() => {
+    return Array.from(new Set(
+      SERVICES
+        .filter(s => s.platform === selection.platform)
+        .map(s => s.category)
+    ));
+  }, [selection.platform]);
+
+  const filteredCategories = categories.filter(c => c.toLowerCase().includes(catSearch.toLowerCase()));
+
+  const selectedService = useMemo(() => SERVICES.find(s => s.id === selection.serviceId), [selection.serviceId]);
+  const availableServices = useMemo(() => {
+    return SERVICES.filter(s => 
+      s.category === selection.category && 
+      s.platform === selection.platform
+    );
+  }, [selection.category, selection.platform]);
+  const filteredServices = availableServices.filter(s => s.name.toLowerCase().includes(serviceSearch.toLowerCase()));
+
+  const totalPrice = useMemo(() => {
+    return selectedService ? (selectedService.pricePerUnit * selection.quantity).toFixed(2) : "0.00";
+  }, [selectedService, selection.quantity]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+
+  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
+  const [topUpAmount, setTopUpAmount] = useState<string>("50");
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const loadWalletBalance = async () => {
     const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -92,7 +192,6 @@ export default function OrderFlow() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Get current user
       const { data: userData, error: userError } = await supabase.auth.getUser();
       if (userError || !userData?.user) {
         alert("You must be logged in to place an order.");
@@ -100,43 +199,42 @@ export default function OrderFlow() {
         return;
       }
       const userId = userData.user.id;
-      // Fetch user profile for wallet_balance
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("wallet_balance")
         .eq("id", userId)
         .maybeSingle();
+
       if (profileError || !profile) {
-        alert("Could not fetch wallet balance. Try again.");
+        alert("Could not fetch wallet balance.");
         setIsSubmitting(false);
         return;
       }
+
       const balance = parseFloat(profile.wallet_balance);
       const price = parseFloat(totalPrice);
       if (balance < price) {
-        alert("Insufficient wallet balance. Please add funds.");
+        alert("Insufficient wallet balance.");
         setIsSubmitting(false);
         return;
       }
-      // Deduct funds
+
       const { error: updateError } = await supabase
         .from("profiles")
         .update({ wallet_balance: balance - price })
         .eq("id", userId);
-      if (updateError) {
-        alert("Failed to deduct funds. Try again.");
-        setIsSubmitting(false);
-        return;
-      }
+
+      if (updateError) throw updateError;
+
       setWalletBalance(Number((balance - price).toFixed(2)));
-      // Place order
+
       const { data, error } = await supabase
         .from('orders')
         .insert([
           {
             user_id: userId,
             platform: selection.platform,
-            service: selection.service,
+            service: selection.serviceId,
             quantity: selection.quantity,
             target_username: selection.username,
             total_price: price,
@@ -144,64 +242,57 @@ export default function OrderFlow() {
           }
         ])
         .select();
+
       if (error) throw error;
       setOrderId(data[0].id);
-      // Send notification email to admin
-      try {
-        await fetch("/api/notify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            subject: "New Order Placed",
-            html: `<h2>Order Placed</h2>
-              <p>User ID: ${userId}</p>
-              <p>Order ID: ${data[0].id}</p>
-              <p>Platform: ${selection.platform}</p>
-              <p>Service: ${selection.service}</p>
-              <p>Quantity: ${selection.quantity}</p>
-              <p>Target: ${selection.username}</p>
-              <p>Amount: ₹${price}</p>
-              <p>Status: pending</p>
-              <p>Date: ${new Date().toLocaleString()}</p>`
-          })
+
+      // Financial Log
+      await supabase
+        .from("wallet_transactions")
+        .insert({
+          user_id: userId,
+          amount: price,
+          type: "debit",
+          description: `${selection.serviceId} for ${selection.platform}`,
+          metadata: { order_id: data[0].id, target: selection.username, quantity: selection.quantity }
         });
-      } catch (e) { /* ignore email errors */ }
-      setStep(6);
+
+      setStep(2);
     } catch (error) {
-      console.error("Error submitting order:", error);
-      alert("Failed to submit order. Please check your connection.");
+      console.error("Order error:", error);
+      alert("Failed to submit order.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleAddFunds = async () => {
-    const amount = prompt("Enter amount to add (in INR):");
-    if (!amount || isNaN(Number(amount)) || Number(amount) < 10) {
-      return alert("Please enter a valid amount of at least ₹10");
-    }
+  const executeAddFunds = async () => {
+    let amountStr = topUpAmount.trim();
+    if (!amountStr) return;
+    const amount = Math.floor(Number(amountStr));
+    if (isNaN(amount) || amount < 10) return alert("Min. ₹10");
 
+    setIsProcessingPayment(true);
     try {
       const userId = await loadWalletBalance();
       if (!userId) {
-        alert("You must be logged in to add funds.");
+        setIsProcessingPayment(false);
         return;
       }
 
       const res = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Number(amount) }),
+        body: JSON.stringify({ amount }),
       });
       const order = await res.json();
-      if (!order.id) throw new Error("Order creation failed");
 
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
-        name: "Social Insight Tech",
-        description: "Add funds to wallet",
+        name: "SMM Dashboard",
+        description: "Wallet Top-up",
         order_id: order.id,
         handler: async function (response: any) {
           const verifyRes = await fetch("/api/razorpay/verify-payment", {
@@ -211,356 +302,315 @@ export default function OrderFlow() {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              amount: Number(amount),
+              amount,
               userId,
             }),
           });
           const result = await verifyRes.json();
           if (result.success) {
             await loadWalletBalance();
-            alert("Funds added successfully!");
-          } else {
-            alert(result.error || "Payment verification failed.");
+            setIsTopUpModalOpen(false);
+            alert("Funds added!");
           }
+          setIsProcessingPayment(false);
         },
+        modal: { ondismiss: () => setIsProcessingPayment(false) },
         theme: { color: "#4f46e5" },
       };
 
       const rzp = new (window as any).Razorpay(options);
-      rzp.on("payment.failed", function (response: any) {
-        alert(`Payment Failed: ${response.error.description}`);
-      });
       rzp.open();
     } catch (error) {
-      console.error("Error starting razorpay payment:", error);
-      alert("Something went wrong");
+      console.error("Payment error:", error);
+      setIsProcessingPayment(false);
     }
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-20 px-6">
+    <div className="w-full max-w-5xl mx-auto py-20 px-6 relative">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-      <div className="relative bg-[#0F0F11] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl">
-        <div className="absolute inset-0 bg-[linear-gradient(to_br,var(--color-indigo-500)/5,transparent,var(--color-pink-500)/5)] pointer-events-none" />
-        
-        {/* Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-white/5">
-          <motion.div 
-            className="h-full bg-linear-to-r from-indigo-500 to-pink-500"
-            initial={{ width: "0%" }}
-            animate={{ width: `${(step / 6) * 100}%` }}
-          />
-        </div>
-        {/* Wallet & Add Funds Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/2 border-b border-white/5 px-6 sm:px-10 py-5">
-          <div className="flex items-center gap-4 w-full sm:w-auto mb-4 sm:mb-0">
-            <div className="h-12 w-12 rounded-2xl bg-[linear-gradient(to_br,var(--color-green-500)/20,var(--color-emerald-500)/10)] border border-green-500/20 flex items-center justify-center text-green-400">
-              <Wallet className="h-6 w-6" />
+
+      {/* Top Up Modal */}
+      <AnimatePresence>
+        {isTopUpModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsTopUpModalOpen(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-[2.5rem] p-10 overflow-hidden"
+            >
+              <div className="text-center space-y-4">
+                <div className="h-16 w-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto">
+                  <Wallet className="h-8 w-8 text-indigo-400" />
+                </div>
+                <h2 className="text-2xl font-black text-white uppercase italic">Add Funds</h2>
+                <input
+                  type="text"
+                  value={topUpAmount}
+                  onChange={(e) => setTopUpAmount(e.target.value.replace(/[^0-9]/g, ''))}
+                  className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 text-2xl font-black text-white text-center outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  placeholder="0"
+                />
+                <button
+                  onClick={executeAddFunds}
+                  disabled={isProcessingPayment || !topUpAmount || Number(topUpAmount) < 10}
+                  className="w-full h-16 rounded-2xl bg-white text-black font-black uppercase hover:bg-zinc-200 transition-all disabled:opacity-20"
+                >
+                  {isProcessingPayment ? <Loader2 className="animate-spin h-6 w-6 mx-auto" /> : "Proceed to Payment"}
+                </button>
+                <button onClick={() => setIsTopUpModalOpen(false)} className="text-zinc-500 text-xs font-black uppercase hover:text-white">Cancel</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Dashboard UI */}
+      <div className="bg-[#0F0F11] border border-white/10 rounded-[3rem] shadow-2xl relative">
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-white/[0.02] border-b border-white/5 px-8 sm:px-12 py-8 gap-6">
+          <div className="flex items-center gap-6">
+            <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <Zap className="h-7 w-7" />
             </div>
             <div>
-              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-0.5">Available Balance</p>
-              <div className="hidden">
-                <span className="text-2xl font-black text-white">₹0.00</span>
-                <span className="text-sm text-zinc-500 font-medium">INR</span>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-white">{new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(walletBalance)}</span>
-              </div>
+              <h1 className="text-2xl font-black text-white italic uppercase">New Order</h1>
+              <p className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Efficiency Dashboard v2.0</p>
             </div>
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <button 
-              onClick={handleAddFunds}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 hover:scale-105 transition-all duration-300"
+
+          <div className="flex items-center gap-6">
+            <div className="text-right">
+              <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest leading-none mb-1">Balance</p>
+              <p className="text-2xl font-black text-white">₹{walletBalance.toFixed(2)}</p>
+            </div>
+            <button
+              onClick={() => setIsTopUpModalOpen(true)}
+              className="h-12 w-12 rounded-xl bg-white text-black flex items-center justify-center hover:scale-105 transition-all"
             >
-              <Plus className="h-4 w-4" />
-              Add Funds
+              <Plus className="h-5 w-5" />
             </button>
-            <a
-              href="/account"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 text-white font-bold hover:bg-cyan-700 hover:scale-105 transition-all duration-300"
-              style={{ textDecoration: 'none' }}
-            >
-              <Wallet className="h-4 w-4" />
-              My Orders
-            </a>
           </div>
         </div>
-        <div className="p-8 sm:p-12 relative z-10">
+
+        <div className="p-8 sm:p-12">
           <AnimatePresence mode="wait">
-            {/* ... (previous steps remain the same) */}
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <div className="text-center">
-                  <h2 className="text-3xl font-black text-white mb-2">Select Platform</h2>
-                  <p className="text-zinc-400">Where do you want to grow your presence?</p>
-                </div>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                  {PLATFORMS.map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => { setSelection({ ...selection, platform: p.id }); handleNext(); }}
-                      className={`group relative flex flex-col items-center gap-3 p-4 rounded-3xl border transition-all duration-300 ${
-                        selection.platform === p.id 
-                        ? "bg-white/10 border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.1)] scale-105" 
-                        : "bg-white/5 border-white/5 hover:border-white/15 hover:bg-white/[0.07]"
-                      }`}
-                    >
-                      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg shadow-black/40 group-hover:scale-110 transition-transform duration-300`}>
-                        <p.icon className={`h-6 w-6 sm:h-7 sm:w-7 ${p.iconClass}`} />
-                      </div>
-                      <span className="font-semibold text-xs sm:text-sm text-zinc-300 group-hover:text-white transition-colors">{p.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+            {step === 1 ? (
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+                <div className="lg:col-span-3 space-y-10">
+                  {/* Platform Selection Dropdown */}
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Growth Platform</label>
+                    <div className="relative">
+                      <button
+                        onClick={() => {
+                          setIsPlatformOpen(!isPlatformOpen);
+                          setIsCategoryOpen(false);
+                          setIsServiceOpen(false);
+                        }}
+                        className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between text-white hover:bg-white/[0.08] transition-all"
+                      >
+                        <div className="flex items-center gap-4">
+                          {selectedPlatformData && (
+                            <div className={`h-8 w-8 rounded-lg bg-linear-to-br ${selectedPlatformData.color} flex items-center justify-center p-1.5`}>
+                              <img 
+                                src={`https://cdn.simpleicons.org/${selectedPlatformData.logo}/white`} 
+                                className="h-full w-full object-contain" 
+                                alt={selectedPlatformData.name}
+                              />
+                            </div>
+                          )}
+                          <span className="font-black text-lg">{selectedPlatformData?.name || "Select Platform..."}</span>
+                        </div>
+                        <ChevronDown className={`h-6 w-6 text-zinc-600 transition-transform ${isPlatformOpen ? "rotate-180" : ""}`} />
+                      </button>
 
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <div className="text-center">
-                  <button onClick={handleBack} className="text-zinc-500 hover:text-white flex items-center gap-2 mx-auto mb-4 text-sm font-bold">
-                    <ArrowLeft className="h-4 w-4" /> Back to Platforms
-                  </button>
-                  <h2 className="text-3xl font-black text-white mb-2">Choose Service</h2>
-                  <p className="text-zinc-400">What specific boost do you need?</p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {SERVICES.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => { setSelection({ ...selection, service: s.id }); handleNext(); }}
-                      className={`group flex items-center gap-6 p-6 rounded-3xl border transition-all ${
-                        selection.service === s.id 
-                        ? "bg-white/10 border-white/20" 
-                        : "bg-white/5 border-white/5 hover:border-white/10"
-                      }`}
-                    >
-                      <div className={`h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-all ${s.iconClass} ${s.activeClass}`}>
-                        <s.icon className="h-6 w-6" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="font-bold text-white text-lg">{s.name}</h3>
-                          <p className="text-zinc-500 text-sm">Starts at ₹{s.pricePerUnit}/unit</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <div className="text-center">
-                  <button onClick={handleBack} className="text-zinc-500 hover:text-white flex items-center gap-2 mx-auto mb-4 text-sm font-bold">
-                    <ArrowLeft className="h-4 w-4" /> Back to Services
-                  </button>
-                  <h2 className="text-3xl font-black text-white mb-2">Select Quantity</h2>
-                  <p className="text-zinc-400">How many {selection.service} would you like?</p>
-                </div>
-                
-                <div className="max-w-md mx-auto space-y-8">
-                  <div className="relative">
-                    <input 
-                      type="range" 
-                      min="100" 
-                      max="10000" 
-                      step="100"
-                      value={selection.quantity}
-                      onChange={(e) => setSelection({...selection, quantity: parseInt(e.target.value)})}
-                      className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-                    />
-                    <div className="flex justify-between text-zinc-500 text-xs mt-4 font-bold">
-                      <span>100</span>
-                      <span>5,000</span>
-                      <span>10,000</span>
+                      {isPlatformOpen && (
+                        <div className="absolute top-full left-0 right-0 mt-3 bg-[#111114] border border-white/10 rounded-2xl z-[60] shadow-2xl overflow-hidden">
+                          <div className="p-4 border-b border-white/5 bg-white/2">
+                            <div className="relative">
+                              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
+                              <input 
+                                autoFocus
+                                value={platformSearch}
+                                onChange={(e) => setPlatformSearch(e.target.value)}
+                                placeholder="Search platform..."
+                                className="w-full bg-black/40 border-none rounded-xl h-12 pl-12 pr-4 text-sm text-white outline-none"
+                              />
+                            </div>
+                          </div>
+                          <div className="max-h-64 overflow-y-auto p-2 custom-scrollbar">
+                            {filteredPlatforms.map(p => (
+                              <button
+                                key={p.id}
+                                onClick={() => {
+                                  setSelection({ ...selection, platform: p.id, category: "", serviceId: "" });
+                                  setIsPlatformOpen(false);
+                                  setPlatformSearch("");
+                                }}
+                                className="w-full text-left px-5 py-4 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white transition-all group flex items-center justify-between"
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className={`h-8 w-8 rounded-lg bg-linear-to-br ${p.color} flex items-center justify-center p-1.5 opacity-70 group-hover:opacity-100 transition-opacity`}>
+                                    <img 
+                                      src={`https://cdn.simpleicons.org/${p.logo}/white`} 
+                                      className="h-full w-full object-contain" 
+                                      alt={p.name}
+                                    />
+                                  </div>
+                                  <span className="text-sm font-black uppercase tracking-tight">{p.name}</span>
+                                </div>
+                                <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-3 group-hover:translate-x-0" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="bg-white/5 rounded-3xl p-8 text-center border border-white/5">
-                    <span className="text-6xl font-black text-white block mb-2">{selection.quantity}</span>
-                    <span className="text-zinc-500 uppercase tracking-widest font-black text-xs">{selection.service}</span>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Category</label>
+                    <div className="relative">
+                      <button onClick={() => setIsCategoryOpen(!isCategoryOpen)} className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between text-white font-black text-lg">
+                        {selection.category || "Select Category"}
+                        <ChevronDown className={`h-5 w-5 transition-transform ${isCategoryOpen ? "rotate-180" : ""}`} />
+                      </button>
+                      {isCategoryOpen && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-[#111114] border border-white/10 rounded-2xl p-2 z-[55] shadow-2xl overflow-hidden">
+                          {categories.map(cat => (
+                            <button key={cat} onClick={() => { setSelection({ ...selection, category: cat, serviceId: "" }); setIsCategoryOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl hover:bg-white/5 text-zinc-400 hover:text-white font-black uppercase text-xs">
+                              {cat}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <button 
-                    onClick={handleNext}
-                    className="w-full h-16 rounded-2xl bg-white text-black font-black text-lg flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all shadow-xl"
-                  >
-                    Continue <ArrowRight className="h-5 w-5" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 4 && (
-              <motion.div
-                key="step4"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <div className="text-center">
-                  <button onClick={handleBack} className="text-zinc-500 hover:text-white flex items-center gap-2 mx-auto mb-4 text-sm font-bold">
-                    <ArrowLeft className="h-4 w-4" /> Back
-                  </button>
-                  <h2 className="text-3xl font-black text-white mb-2">Target Account</h2>
-                  <p className="text-zinc-400">Enter your {selection.platform} username</p>
-                </div>
-
-                <div className="max-w-md mx-auto space-y-6">
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                      <span className="text-zinc-500 text-2xl font-black group-focus-within:text-pink-500 transition-colors">@</span>
+                  <div className={`space-y-4 transition-all ${!selection.category ? "opacity-20" : "opacity-100"}`}>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Service Package</label>
+                    <div className="relative">
+                      <button onClick={() => setIsServiceOpen(!isServiceOpen)} className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between text-white font-black">
+                        <span className="truncate">{selectedService ? `${selectedService.id_num} - ${selectedService.name}` : "Pick Package"}</span>
+                        <ChevronDown className={`h-5 w-5 transition-transform ${isServiceOpen ? "rotate-180" : ""}`} />
+                      </button>
+                      {isServiceOpen && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-[#111114] border border-white/10 rounded-2xl p-2 z-50 max-h-60 overflow-y-auto custom-scrollbar shadow-2xl">
+                          {availableServices.map(s => (
+                            <button key={s.id} onClick={() => { setSelection({ ...selection, serviceId: s.id }); setIsServiceOpen(false); }} className="w-full text-left px-4 py-4 rounded-xl hover:bg-white/5 group">
+                              <div className="flex justify-between items-center">
+                                <span className="text-white font-black uppercase text-xs">#{s.id_num} - {s.name}</span>
+                                <span className="text-indigo-400 font-black text-[10px]">₹{(s.pricePerUnit * 1000).toFixed(2)} /k</span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <input
-                      type="text"
-                      placeholder="username"
-                      value={selection.username}
-                      onChange={(e) => setSelection({...selection, username: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl h-16 pl-12 pr-6 text-xl text-white outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-                    />
                   </div>
 
-                  <button 
-                    disabled={!selection.username.trim()}
-                    onClick={handleNext}
-                    className="w-full h-16 rounded-2xl bg-white text-black font-black text-lg flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all shadow-xl disabled:opacity-50"
-                  >
-                    Review Order <ArrowRight className="h-5 w-5" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {step === 5 && (
-              <motion.div
-                key="step5"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-8"
-              >
-                <div className="text-center">
-                  <h2 className="text-3xl font-black text-white mb-2">Order Summary</h2>
-                  <p className="text-zinc-400">Review your dynamic growth package</p>
-                </div>
-
-                <div className="bg-white/5 rounded-4xl border border-white/10 overflow-hidden shadow-2xl max-w-md mx-auto">
-                  <div className="p-8 space-y-6">
-                    <div className="flex justify-between items-center text-sm font-bold text-zinc-500 uppercase tracking-widest">
-                      <span>Package Details</span>
-                      <Zap className="h-4 w-4 text-amber-400" />
-                    </div>
-                    
+                  <div className={`grid grid-cols-1 sm:grid-cols-2 gap-8 transition-all ${!selectedService ? "opacity-20" : "opacity-100"}`}>
                     <div className="space-y-4">
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Platform</span>
-                        <span className="text-white font-bold capitalize">{selection.platform}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Service</span>
-                        <span className="text-white font-bold capitalize">{selection.service}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Quantity</span>
-                        <span className="text-white font-bold">{selection.quantity} Units</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-zinc-400">Target</span>
-                        <span className="text-pink-400 font-bold">@{selection.username}</span>
-                      </div>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Quantity</label>
+                      <input type="number" value={selection.quantity} onChange={(e) => setSelection({ ...selection, quantity: parseInt(e.target.value) || 0 })} className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-black text-xl outline-none" />
                     </div>
-
-                    <div className="h-px bg-white/10" />
-
-                    <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-white">Total Amount</span>
-                      <span className="text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-pink-500">
-                          ₹{totalPrice}
-                      </span>
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-zinc-600">Target Username/Link</label>
+                      <input type="text" value={selection.username} onChange={(e) => setSelection({ ...selection, username: e.target.value })} className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-black outline-none" placeholder="Enter link..." />
                     </div>
                   </div>
 
-                  <button 
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="w-full py-6 bg-linear-to-r from-indigo-500 to-pink-500 text-white font-black text-xl flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <div className="h-6 w-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        <CreditCard className="h-6 w-6" /> Complete Order
-                      </>
-                    )}
-                  </button>
+                  {selectedService && (
+                    <div className="bg-linear-to-r from-indigo-500/10 to-pink-500/10 rounded-3xl p-8 border border-white/10 flex justify-between items-center mt-10">
+                      <div>
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-1">Total Payable</p>
+                        <p className="text-4xl font-black text-white italic">₹{totalPrice}</p>
+                      </div>
+                      <button onClick={handleSubmit} disabled={isSubmitting || !selection.username} className="px-12 h-16 rounded-2xl bg-white text-black font-black uppercase hover:scale-105 transition-all disabled:opacity-20 shadow-xl shadow-white/10">
+                        {isSubmitting ? "Processing..." : "Place Order"}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                <button onClick={() => setStep(1)} className="text-zinc-500 hover:text-white mx-auto block font-bold text-sm">
-                  Cancel and restart
-                </button>
+                <div className="lg:col-span-2">
+                  <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-8 h-full min-h-[400px]">
+                    <div className="flex items-center gap-3 mb-8">
+                      <Info className="h-5 w-5 text-indigo-400" />
+                      <h3 className="text-xs font-black text-white uppercase tracking-widest">Instance Details</h3>
+                    </div>
+                    <div className="text-[11px] leading-relaxed text-zinc-500 font-bold uppercase tracking-widest whitespace-pre-wrap">
+                      {selectedService ? selectedService.description : "Initialize a package to view specs"}
+                    </div>
+                  </div>
+                </div>
               </motion.div>
-            )}
-
-            {step === 6 && (
-              <motion.div
-                key="step6"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-12 space-y-8"
-              >
-                <div className="relative mx-auto h-32 w-32 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30 shadow-[0_0_50px_rgba(34,197,94,0.3)]">
-                  <CheckCircle2 className="h-16 w-16 text-green-500" />
-                  <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1.5, opacity: 0 }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="absolute inset-0 rounded-full border-2 border-green-500"
-                  />
+            ) : (
+              <motion.div key="success" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center py-20 space-y-10">
+                <div className="mx-auto h-32 w-32 rounded-3xl bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/50">
+                   <CheckCircle2 className="h-16 w-16 text-white" />
                 </div>
-
-                <div className="space-y-4">
-                  <h2 className="text-4xl font-black text-white">Order Confirmed!</h2>
-                  <p className="text-zinc-400 text-lg max-w-sm mx-auto">
-                    Your growth package is being provisioned. Your order ID is <span className="text-indigo-400 font-mono">#{orderId?.slice(0, 8)}</span>
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button 
-                    onClick={() => setStep(1)}
-                    className="px-8 py-4 rounded-2xl bg-white text-black font-black hover:bg-zinc-200 transition-all"
-                  >
-                    Place Another Order
-                  </button>
-                  <button 
-                    className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black hover:bg-white/10 transition-all"
-                  >
-                    Track Progress
-                  </button>
+                <h2 className="text-5xl font-black text-white italic uppercase tracking-tighter">Order Established</h2>
+                <div className="flex gap-6 justify-center">
+                  <button onClick={() => { setStep(1); setSelection({ ...selection, serviceId: "", username: "" }); }} className="px-10 h-14 rounded-xl bg-white text-black font-black uppercase">Another Order</button>
+                  <a href="/account" className="px-10 h-14 rounded-xl bg-white/5 border border-white/10 text-white flex items-center justify-center font-black uppercase">Dashboard</a>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        {/* Features / Trust Section */}
+        <div className="bg-white/[0.01] border-t border-white/5 p-8 sm:px-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors group">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/10 group-hover:scale-110 transition-transform">
+                <Zap className="h-5 w-5 text-indigo-400" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Instant Start</h4>
+                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider leading-relaxed">Processing begins in minutes</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors group">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-pink-500/10 flex items-center justify-center border border-pink-500/10 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="h-5 w-5 text-pink-400" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[10px] font-black text-white uppercase tracking-widest leading-none">100% Secure</h4>
+                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider leading-relaxed">No password required ever</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors group">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/10 group-hover:scale-110 transition-transform">
+                <Globe className="h-5 w-5 text-cyan-400" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Global Reach</h4>
+                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider leading-relaxed">High quality global network</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/[0.02] transition-colors group">
+              <div className="h-10 w-10 shrink-0 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/10 group-hover:scale-110 transition-transform">
+                <RefreshCw className="h-5 w-5 text-green-400" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-[10px] font-black text-white uppercase tracking-widest leading-none">Refill Guarantee</h4>
+                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider leading-relaxed">30-day drop protection</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

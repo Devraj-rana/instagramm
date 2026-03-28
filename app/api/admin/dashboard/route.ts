@@ -11,7 +11,7 @@ export async function GET() {
   const [profilesResult, ordersResult, testimonialsResult, pendingOrdersResult] = await Promise.all([
     supabaseAdmin
       .from("profiles")
-      .select("id, full_name, username, website, wallet_balance, updated_at")
+      .select("id, full_name, username, website, wallet_balance, updated_at, status")
       .order("updated_at", { ascending: false, nullsFirst: false })
       .limit(50),
     supabaseAdmin

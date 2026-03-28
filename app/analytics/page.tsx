@@ -16,7 +16,7 @@ import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import { Button } from "@/components/modern/Button";
 
-const sampleUsernames = ["cristiano", "zendaya", "natgeo"];
+const sampleUsernames = ["narendramodi", "indiaofficial"];
 
 const featurePills = [
   {

@@ -15,7 +15,7 @@ import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 
 type AuthPageProps = {
-  mode: "sign-in" | "sign-up";
+  mode: "sign-in" | "sign-up" | "reset-password" | "update-password";
 };
 
 type FormState = {
@@ -44,6 +44,26 @@ const pageContent = {
     formTitle: "Create your profile",
     primaryLabel: "Continue with Google",
     switchPrompt: "Already have an account?",
+    switchHref: "/sign-in",
+    switchLabel: "Sign in",
+  },
+  "reset-password": {
+    eyebrow: "Account Recovery",
+    title: "Reset your password",
+    description: "Enter your email address and we'll send you a link to reset your password.",
+    formTitle: "Send reset link",
+    primaryLabel: "Continue with Google",
+    switchPrompt: "Remember your password?",
+    switchHref: "/sign-in",
+    switchLabel: "Sign in",
+  },
+  "update-password": {
+    eyebrow: "Secure Account",
+    title: "Set new password",
+    description: "Please enter your new password below. Make sure it's at least 6 characters long.",
+    formTitle: "Update password",
+    primaryLabel: "Continue with Google",
+    switchPrompt: "Back to sign in?",
     switchHref: "/sign-in",
     switchLabel: "Sign in",
   },
@@ -77,8 +97,17 @@ export default function AuthPage({ mode }: AuthPageProps) {
       }
 
       if (data.session) {
+        if (mode === "update-password") {
+          setIsCheckingSupabase(false);
+          return;
+        }
         router.replace("/");
         return;
+      }
+
+      if (mode === "update-password") {
+        // Should only be here if they just clicked the reset link which auto-signs them in
+        setErrorMessage("Your reset link has expired or is invalid. Please request a new one.");
       }
 
       setIsCheckingSupabase(false);
@@ -88,8 +117,8 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && mode !== "update-password") {
         router.replace("/");
       }
     });
@@ -118,12 +147,63 @@ export default function AuthPage({ mode }: AuthPageProps) {
       return;
     }
 
+    if (mode === "reset-password") {
+      await handleResetPassword();
+      return;
+    }
+
+    if (mode === "update-password") {
+      await handleUpdatePassword();
+      return;
+    }
+
     if (pendingVerification) {
       await handleVerifyOtp();
       return;
     }
 
     await handleSignUp();
+  };
+
+  const handleResetPassword = async () => {
+    if (!form.email.trim()) {
+      setErrorMessage("Enter your email address.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(form.email.trim(), {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+    setIsSubmitting(false);
+
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+
+    setInfoMessage("We've sent a password reset link to your email. Check your inbox.");
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!form.password.trim() || form.password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const { error } = await supabase.auth.updateUser({ password: form.password });
+    setIsSubmitting(false);
+
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+
+    setInfoMessage("Your password has been successfully updated!");
+    setTimeout(() => {
+      router.replace("/");
+    }, 2000);
   };
 
   const handleSignUp = async () => {
@@ -141,9 +221,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: form.email.trim(),
-      password: form.password,
+      password: form.password.trim(),
       options: {
         data: {
           full_name: form.name.trim(),
@@ -156,6 +236,12 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
     if (error) {
       setErrorMessage(error.message);
+      return;
+    }
+
+    // Supabase returns a user with empty identities if the email already exists
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      setErrorMessage("An account with this email already exists. Please sign in instead.");
       return;
     }
 
@@ -271,6 +357,10 @@ export default function AuthPage({ mode }: AuthPageProps) {
     ? pendingVerification
       ? "Verify email"
       : "Create account"
+    : mode === "reset-password"
+      ? "Send reset link"
+    : mode === "update-password"
+      ? "Update password"
     : "Sign in";
 
   return (
@@ -298,10 +388,23 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <ReadOnlyField label="Email" value={form.email} />
                   <AuthInput label="OTP code" name="otp" type="text" inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="Enter the 6-digit code" value={form.otp} onChange={(event) => updateField("otp", event.target.value)} />
                 </>
+              ) : mode === "reset-password" ? (
+                <AuthInput label="Email" name="email" type="email" autoComplete="email" placeholder="Enter your email" value={form.email} onChange={(event) => updateField("email", event.target.value)} />
+              ) : mode === "update-password" ? (
+                <AuthInput label="New Password" name="password" type="password" autoComplete="new-password" placeholder="Create a new password" value={form.password} onChange={(event) => updateField("password", event.target.value)} />
               ) : (
                 <>
                   <AuthInput label="Email" name="email" type="email" autoComplete="email" placeholder="Enter your email" value={form.email} onChange={(event) => updateField("email", event.target.value)} />
-                  <AuthInput label="Password" name="password" type="password" autoComplete={mode === "sign-up" ? "new-password" : "current-password"} placeholder={mode === "sign-up" ? "Create a password" : "Enter your password"} value={form.password} onChange={(event) => updateField("password", event.target.value)} />
+                  <div>
+                    <AuthInput label="Password" name="password" type="password" autoComplete={mode === "sign-up" ? "new-password" : "current-password"} placeholder={mode === "sign-up" ? "Create a password" : "Enter your password"} value={form.password} onChange={(event) => updateField("password", event.target.value)} />
+                    {mode === "sign-in" && (
+                      <div className="mt-2 flex justify-end">
+                        <Link href="/reset-password" className="text-xs font-medium text-zinc-400 transition-colors hover:text-cyan-300">
+                          Forgot your password?
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
 
@@ -329,21 +432,25 @@ export default function AuthPage({ mode }: AuthPageProps) {
               ) : null}
             </form>
 
-            <div className="mt-6 flex items-center gap-3 text-xs uppercase tracking-[0.24em] text-zinc-500">
-              <div className="h-px flex-1 bg-white/10" />
-              <span>or</span>
-              <div className="h-px flex-1 bg-white/10" />
-            </div>
+            {mode !== "update-password" && (
+              <>
+                <div className="mt-6 flex items-center gap-3 text-xs uppercase tracking-[0.24em] text-zinc-500">
+                  <div className="h-px flex-1 bg-white/10" />
+                  <span>or</span>
+                  <div className="h-px flex-1 bg-white/10" />
+                </div>
 
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              disabled={isBusy}
-              className="mt-6 flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-white px-5 text-base font-bold text-zinc-950 transition-all hover:scale-[1.01] hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
-            >
-              <GoogleIcon />
-              <span>{content.primaryLabel}</span>
-            </button>
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={isBusy}
+                  className="mt-6 flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-white px-5 text-base font-bold text-zinc-950 transition-all hover:scale-[1.01] hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
+                >
+                  <GoogleIcon />
+                  <span>{content.primaryLabel}</span>
+                </button>
+              </>
+            )}
 
             <div className="mt-6 flex items-center justify-center gap-2 text-sm text-zinc-400">
               <span>{content.switchPrompt}</span>

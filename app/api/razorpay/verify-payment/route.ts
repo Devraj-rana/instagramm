@@ -49,6 +49,28 @@ export async function POST(req: NextRequest) {
       if (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       }
+
+      // Record transaction history
+      try {
+        await supabaseAdmin
+          .from("wallet_transactions")
+          .insert({
+            user_id: userId,
+            amount: numericAmount,
+            type: "credit",
+            description: `Wallet top-up via Razorpay`,
+            metadata: {
+              razorpay_order_id,
+              razorpay_payment_id,
+              status: "success"
+            }
+          });
+      } catch (logError) {
+        console.error("Failed to log transaction:", logError);
+        // We don't fail the verification if logging fails, 
+        // as the user's balance IS already updated.
+      }
+
       // Send notification email
       try {
         await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || ''}/api/notify`, {

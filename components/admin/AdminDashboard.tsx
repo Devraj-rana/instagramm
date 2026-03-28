@@ -28,6 +28,7 @@ type DashboardResponse = {
     website: string | null;
     wallet_balance: number | string | null;
     updated_at: string | null;
+    status: string;
   }>;
   orders: Array<{
     id: string;
@@ -52,6 +53,22 @@ type DashboardResponse = {
   }>;
   supportInboxMode: string;
 };
+  const updateUserStatus = async (profileId: string, status: string) => {
+    await runAction(`profile-status-${profileId}`, async () => {
+      const response = await fetch(`/api/admin/profiles/${profileId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": adminKey,
+        },
+        body: JSON.stringify({ status }),
+      });
+      const json = await response.json();
+      if (!response.ok || !json.success) {
+        throw new Error(json.error || "Failed to update user status.");
+      }
+    });
+  };
 
 const currency = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -307,6 +324,28 @@ export default function AdminDashboard() {
                       <p className="mt-1 text-sm text-zinc-400">@{profile.username || "no-username"}</p>
                       <p className="mt-2 text-sm text-zinc-300">{currency.format(Number(profile.wallet_balance ?? 0))}</p>
                       <p className="mt-1 text-xs text-zinc-500">{profile.website || profile.id}</p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className={`inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${profile.status === "completed" ? "bg-green-500 text-black" : "bg-yellow-400 text-black"}`}>
+                          {profile.status}
+                        </span>
+                        {profile.status === "pending" ? (
+                          <button
+                            onClick={() => void updateUserStatus(profile.id, "completed")}
+                            disabled={activeAction === `profile-status-${profile.id}`}
+                            className="inline-flex items-center rounded-full bg-cyan-400 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-black transition-all hover:bg-cyan-300 disabled:opacity-50"
+                          >
+                            Mark Completed
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => void updateUserStatus(profile.id, "pending")}
+                            disabled={activeAction === `profile-status-${profile.id}`}
+                            className="inline-flex items-center rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-black transition-all hover:bg-yellow-300 disabled:opacity-50"
+                          >
+                            Mark Pending
+                          </button>
+                        )}
+                      </div>
                       <button
                         onClick={() => void updateWalletBalance(profile.id, profile.wallet_balance)}
                         disabled={activeAction === `profile-${profile.id}`}

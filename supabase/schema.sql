@@ -8,6 +8,7 @@ create table profiles (
   website text,
 
   wallet_balance decimal(10,2) not null default 0,
+  status text not null default 'pending',
 
   constraint username_length check (char_length(username) >= 3)
 );

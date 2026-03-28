@@ -31,29 +31,6 @@ export default function ServicesSection() {
           </p>
         </div>
 
-        {/* Feature Highlights before the Order Flow */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-20">
-          {[
-            { icon: Zap, title: "Instant Start", desc: "Processing begins in minutes", color: "text-amber-400" },
-            { icon: Shield, title: "100% Secure", desc: "No password required ever", color: "text-blue-400" },
-            { icon: Globe, title: "Global Reach", desc: "High quality global network", color: "text-emerald-400" },
-            { icon: Sparkles, title: "Refill Guarantee", desc: "30-day drop protection", color: "text-purple-400" },
-          ].map((item, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-              className="p-6 rounded-3xl bg-white/5 border border-white/5 text-center group hover:bg-white/10 transition-all"
-            >
-              <div className={`mx-auto h-12 w-12 rounded-2xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center mb-4 ${item.color} group-hover:scale-110 transition-transform`}>
-                <item.icon className="h-6 w-6" />
-              </div>
-              <h3 className="text-white font-bold mb-1">{item.title}</h3>
-              <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
 
         {/* The Core Order Flow Integration */}
         <div id="order-start">
