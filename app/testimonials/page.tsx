@@ -7,13 +7,23 @@ import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60; // Cache for 60 seconds
 
+type DbTestimonialRow = {
+    id: string;
+    user_id: string | null;
+    body: string;
+    author_name: string;
+    author_handle: string;
+    author_image_url: string;
+    rating: number | null;
+};
+
 export default async function TestimonialsPage() {
     const { data: dbTestimonials } = await supabase
         .from("testimonials")
         .select("*")
         .order("created_at", { ascending: false });
 
-    const testimonials = (dbTestimonials ?? []).map((t) => ({
+    const testimonials = ((dbTestimonials ?? []) as DbTestimonialRow[]).map((t) => ({
             id: t.id,
             userId: t.user_id,
             body: t.body,

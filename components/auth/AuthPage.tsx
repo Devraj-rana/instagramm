@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import {
   FormEvent,
   InputHTMLAttributes,
@@ -117,7 +118,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       if (session && mode !== "update-password") {
         router.replace("/");
       }

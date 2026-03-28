@@ -53,22 +53,6 @@ type DashboardResponse = {
   }>;
   supportInboxMode: string;
 };
-  const updateUserStatus = async (profileId: string, status: string) => {
-    await runAction(`profile-status-${profileId}`, async () => {
-      const response = await fetch(`/api/admin/profiles/${profileId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-admin-key": adminKey,
-        },
-        body: JSON.stringify({ status }),
-      });
-      const json = await response.json();
-      if (!response.ok || !json.success) {
-        throw new Error(json.error || "Failed to update user status.");
-      }
-    });
-  };
 
 const currency = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -153,6 +137,23 @@ export default function AdminDashboard() {
     } finally {
       setActiveAction(null);
     }
+  };
+
+  const updateUserStatus = async (profileId: string, status: string) => {
+    await runAction(`profile-status-${profileId}`, async () => {
+      const response = await fetch(`/api/admin/profiles/${profileId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": adminKey,
+        },
+        body: JSON.stringify({ status }),
+      });
+      const json = await response.json();
+      if (!response.ok || !json.success) {
+        throw new Error(json.error || "Failed to update user status.");
+      }
+    });
   };
 
   const updateOrderStatus = async (orderId: string, status: string) => {

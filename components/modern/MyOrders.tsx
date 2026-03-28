@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   XCircle,
   Hourglass,
+  type LucideIcon,
 } from "lucide-react";
 
 interface Order {
@@ -26,7 +27,7 @@ interface Order {
 
 const statusConfig: Record<
   string,
-  { icon: React.ElementType; color: string; bg: string; border: string }
+  { icon: LucideIcon; color: string; bg: string; border: string }
 > = {
   completed: {
     icon: CheckCircle2,
@@ -60,7 +61,7 @@ const statusConfig: Record<
   },
 };
 
-const defaultStatusConfig: { icon: React.ElementType; color: string; bg: string; border: string } = {
+const defaultStatusConfig: { icon: LucideIcon; color: string; bg: string; border: string } = {
   icon: Clock,
   color: "text-zinc-300",
   bg: "bg-zinc-500/10",

@@ -17,6 +17,10 @@ export default function SmoothScrolling({
             smoothWheel: true,
             wheelMultiplier: 1,
             touchMultiplier: 2,
+            // Keep native scrolling for nested containers like dropdown lists/modals.
+            prevent: (node) => {
+                return !!node.closest("[data-lenis-prevent]");
+            },
         });
 
         function raf(time: number) {

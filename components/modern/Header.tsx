@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import type { Session as SupabaseSession } from "@supabase/supabase-js";
+import type { AuthChangeEvent, Session as SupabaseSession } from "@supabase/supabase-js";
 
 export default function Header() {
     return (
@@ -64,7 +64,7 @@ function AuthButton() {
 
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: SupabaseSession | null) => {
             setSupabaseSession(session);
             setIsSupabaseLoading(false);
         });
