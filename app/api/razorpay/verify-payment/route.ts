@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
       .digest("hex");
 
     if (expectedSignature === razorpay_signature) {
-      console.log("Payment Verified", razorpay_payment_id);
 
       // Ensure this payment hasn't already been credited.
       const { data: existingTxn, error: existingTxnError } = await supabaseAdmin
@@ -111,7 +110,7 @@ export async function POST(req: NextRequest) {
             html: `<h2>Funds Added</h2><p>User ID: ${userId}</p><p>Amount: ₹${creditedAmount}</p><p>Payment ID: ${razorpay_payment_id}</p><p>Order ID: ${razorpay_order_id}</p>`
           })
         });
-      } catch (e) { /* ignore email errors */ }
+      } catch { /* ignore email errors */ }
       return NextResponse.json({ success: true, creditedAmount, message: "Payment verified and wallet updated" });
     } else {
       return NextResponse.json(

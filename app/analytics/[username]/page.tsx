@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, TrendingUp, Users, Eye, Target, Sparkles, MessageCircle, Heart, ArrowLeft } from "lucide-react";
+import { CheckCircle2, TrendingUp, Eye, Target, Sparkles, MessageCircle, Heart, ArrowLeft } from "lucide-react";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/modern/Card";
@@ -169,9 +170,11 @@ export default function AnalysisResultsPage() {
                                     <CardContent className="relative z-10 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 h-full">
                                         <div className="relative shrink-0">
                                             {data.profilePicUrl && !imgError ? (
-                                                <img
+                                                <Image
                                                     src={data.profilePicUrl}
                                                     alt={data.username}
+                                                    width={96}
+                                                    height={96}
                                                     className="h-24 w-24 rounded-full border-4 border-[#121214] shadow-xl object-cover"
                                                     onError={() => setImgError(true)}
                                                     referrerPolicy="no-referrer"

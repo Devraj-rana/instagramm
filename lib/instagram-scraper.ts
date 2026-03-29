@@ -5,6 +5,12 @@
 
 import type { ProfileData } from './types';
 
+const debugLog = (...args: unknown[]) => {
+    if (process.env.NODE_ENV !== 'production') {
+        void args;
+    }
+};
+
 // Type definitions for Instagram API responses
 interface InstagramPost {
     node: {
@@ -119,7 +125,7 @@ async function scrapeWithInstagram120(username: string): Promise<ProfileData> {
     }
 
     const profileJson = await profileResponse.json();
-    console.log('[Instagram120] Profile response keys:', Object.keys(profileJson));
+    debugLog('[Instagram120] Profile response keys:', Object.keys(profileJson));
 
     // Extract user object from various response shapes
     const user = profileJson.result?.user || profileJson.result || profileJson.data?.user || profileJson.data || profileJson.user || profileJson;
@@ -129,7 +135,7 @@ async function scrapeWithInstagram120(username: string): Promise<ProfileData> {
         throw new Error('Could not extract profile data from Instagram120 API');
     }
 
-    console.log('[Instagram120] Extracted user:', JSON.stringify({
+    debugLog('[Instagram120] Extracted user:', JSON.stringify({
         username: user.username, full_name: user.full_name,
         follower_count: user.follower_count, following_count: user.following_count,
         media_count: user.media_count, is_verified: user.is_verified,
@@ -165,7 +171,7 @@ async function scrapeWithInstagram120(username: string): Promise<ProfileData> {
                 posts = responseData;
             }
 
-            console.log(`[Instagram120] Found ${posts.length} posts for engagement`);
+            debugLog(`[Instagram120] Found ${posts.length} posts for engagement`);
 
             if (posts.length > 0) {
                 const recentPosts = posts.slice(0, 12);
@@ -429,7 +435,7 @@ async function scrapeWithApify(username: string): Promise<ProfileData> {
     const runId = runData.data.id;
     const datasetId = runData.data.defaultDatasetId;
 
-    console.log(`[Apify] Run started - ID: ${runId}`);
+    debugLog(`[Apify] Run started - ID: ${runId}`);
 
     // Wait for the run to complete (poll every 3 seconds, max 2 minutes)
     let attempts = 0;
@@ -445,10 +451,10 @@ async function scrapeWithApify(username: string): Promise<ProfileData> {
 
         runStatus = await statusResponse.json();
 
-        console.log(`[Apify] Status check ${attempts + 1}/${maxAttempts}: ${runStatus.data.status}`);
+        debugLog(`[Apify] Status check ${attempts + 1}/${maxAttempts}: ${runStatus.data.status}`);
 
         if (runStatus.data.status === 'SUCCEEDED') {
-            console.log('[Apify] Run succeeded!');
+            debugLog('[Apify] Run succeeded!');
             break;
         } else if (runStatus.data.status === 'FAILED' || runStatus.data.status === 'ABORTED') {
             const errorMsg = runStatus.data.error || 'Unknown error';
@@ -473,7 +479,7 @@ async function scrapeWithApify(username: string): Promise<ProfileData> {
 
     const results = await resultsResponse.json();
 
-    console.log(`[Apify] Retrieved ${results.length} items from dataset`);
+    debugLog(`[Apify] Retrieved ${results.length} items from dataset`);
 
     if (!results || results.length === 0) {
         throw new Error('No data returned from Apify. The profile may be private or doesn\'t exist.');
@@ -482,8 +488,8 @@ async function scrapeWithApify(username: string): Promise<ProfileData> {
     // Apify Profile Scraper returns proper profile data
     const profile = results[0] as ApifyProfileData;
 
-    console.log('[Apify] Full profile data:', JSON.stringify(profile, null, 2));
-    console.log('[Apify] Available keys:', Object.keys(profile).join(', '));
+    debugLog('[Apify] Full profile data:', JSON.stringify(profile, null, 2));
+    debugLog('[Apify] Available keys:', Object.keys(profile).join(', '));
 
     // Extract profile data - Profile scraper has consistent field names
     const username2: string = (profile.username || username) as string;
@@ -528,7 +534,7 @@ async function scrapeWithApify(username: string): Promise<ProfileData> {
         ? parseFloat(((avgLikes + avgComments) / followers * 100).toFixed(2))
         : 0;
 
-    console.log('[Apify] Extracted REAL data:', {
+    debugLog('[Apify] Extracted REAL data:', {
         username: username2,
         fullName,
         followers,
@@ -676,63 +682,63 @@ export async function scrapeInstagramProfile(username: string): Promise<ProfileD
     if (process.env.RAPIDAPI_KEY) {
         // Try Instagram120 first (fastest and most reliable)
         try {
-            console.log('[Scraper] Trying Instagram120 API...');
+            debugLog('[Scraper] Trying Instagram120 API...');
             const result = await scrapeWithInstagram120(username);
-            console.log('[Scraper] ✓ Instagram120 method succeeded');
+            debugLog('[Scraper] ✓ Instagram120 method succeeded');
             return result;
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
-            console.log(`[Scraper] ✗ Instagram120 method failed: ${msg}`);
+            debugLog(`[Scraper] ✗ Instagram120 method failed: ${msg}`);
             errors.push(`Instagram120: ${msg}`);
         }
 
         // Try original RapidAPI scraper
         try {
-            console.log('[Scraper] Trying RapidAPI Scraper API3...');
+            debugLog('[Scraper] Trying RapidAPI Scraper API3...');
             const result = await scrapeWithRapidAPI(username);
-            console.log('[Scraper] ✓ RapidAPI Scraper API3 succeeded');
+            debugLog('[Scraper] ✓ RapidAPI Scraper API3 succeeded');
             return result;
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
-            console.log(`[Scraper] ✗ RapidAPI Scraper API3 failed: ${msg}`);
+            debugLog(`[Scraper] ✗ RapidAPI Scraper API3 failed: ${msg}`);
             errors.push(`RapidAPI-API3: ${msg}`);
         }
 
         // Try alternative RapidAPI
         try {
-            console.log('[Scraper] Trying alternative RapidAPI method...');
+            debugLog('[Scraper] Trying alternative RapidAPI method...');
             const result = await scrapeWithAlternativeAPI(username);
-            console.log('[Scraper] ✓ Alternative RapidAPI succeeded');
+            debugLog('[Scraper] ✓ Alternative RapidAPI succeeded');
             return result;
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
-            console.log(`[Scraper] ✗ Alternative RapidAPI failed: ${msg}`);
+            debugLog(`[Scraper] ✗ Alternative RapidAPI failed: ${msg}`);
             errors.push(`RapidAPI-Alt: ${msg}`);
         }
     }
 
     // Try public web scraping (no API key needed)
     try {
-        console.log('[Scraper] Trying public web method...');
+        debugLog('[Scraper] Trying public web method...');
         const result = await scrapeWithPublicWeb(username);
-        console.log('[Scraper] ✓ Public web method succeeded');
+        debugLog('[Scraper] ✓ Public web method succeeded');
         return result;
     } catch (error) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
-        console.log(`[Scraper] ✗ Public web method failed: ${msg}`);
+        debugLog(`[Scraper] ✗ Public web method failed: ${msg}`);
         errors.push(`Public: ${msg}`);
     }
 
     // Try Apify if configured
     if (process.env.APIFY_API_TOKEN) {
         try {
-            console.log('[Scraper] Trying Apify method...');
+            debugLog('[Scraper] Trying Apify method...');
             const result = await scrapeWithApify(username);
-            console.log('[Scraper] ✓ Apify method succeeded');
+            debugLog('[Scraper] ✓ Apify method succeeded');
             return result;
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
-            console.log(`[Scraper] ✗ Apify method failed: ${msg}`);
+            debugLog(`[Scraper] ✗ Apify method failed: ${msg}`);
             errors.push(`Apify: ${msg}`);
         }
     }
@@ -744,3 +750,4 @@ export async function scrapeInstagramProfile(username: string): Promise<ProfileD
         `Errors: ${errors.join('; ')}`
     );
 }
+

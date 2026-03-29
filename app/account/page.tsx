@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   UserCircle2,
   Settings,
@@ -175,9 +176,11 @@ function ProfileSettings() {
           <div className="group relative shrink-0">
             <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-cyan-400/30 shadow-[0_0_30px_rgba(34,211,238,0.12)]">
               {form.avatar_url ? (
-                <img
+                <Image
                   src={form.avatar_url}
                   alt="Avatar"
+                  width={96}
+                  height={96}
                   className="h-full w-full object-cover"
                 />
               ) : (

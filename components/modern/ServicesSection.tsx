@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Zap, Shield, Globe } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import OrderFlow from "./OrderFlow";
 
 export default function ServicesSection() {

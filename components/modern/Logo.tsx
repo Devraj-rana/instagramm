@@ -1,8 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { TrendingUp, Search } from "lucide-react";
-
 interface LogoProps {
   className?: string;
   showText?: boolean;

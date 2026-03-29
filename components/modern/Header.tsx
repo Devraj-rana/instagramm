@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
     ChevronRight,
@@ -206,7 +207,7 @@ function AuthButton() {
                 >
                     <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-indigo-500">
                         {activeUser.image ? (
-                            <img src={activeUser.image} alt={activeUser.name} className="h-full w-full object-cover" />
+                            <Image src={activeUser.image} alt={activeUser.name} width={32} height={32} className="h-full w-full object-cover" />
                         ) : (
                             <Logo showText={false} className="scale-75" />
                         )}

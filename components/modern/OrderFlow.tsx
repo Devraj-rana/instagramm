@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Script from "next/script";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -780,10 +781,12 @@ export default function OrderFlow() {
                         <div className="flex items-center gap-4">
                           {selectedPlatformData && (
                             <div className={`h-8 w-8 rounded-lg bg-linear-to-br ${selectedPlatformData.color} flex items-center justify-center p-1.5`}>
-                              <img 
+                              <Image
                                 src={`https://cdn.simpleicons.org/${selectedPlatformData.logo}/white`} 
                                 className="h-full w-full object-contain" 
                                 alt={selectedPlatformData.name}
+                                width={32}
+                                height={32}
                               />
                             </div>
                           )}
@@ -819,10 +822,12 @@ export default function OrderFlow() {
                               >
                                 <div className="flex items-center gap-4">
                                   <div className={`h-8 w-8 rounded-lg bg-linear-to-br ${p.color} flex items-center justify-center p-1.5 opacity-70 group-hover:opacity-100 transition-opacity`}>
-                                    <img 
+                                    <Image
                                       src={`https://cdn.simpleicons.org/${p.logo}/white`} 
                                       className="h-full w-full object-contain" 
                                       alt={p.name}
+                                      width={32}
+                                      height={32}
                                     />
                                   </div>
                                   <span className="text-sm font-black uppercase tracking-tight">{p.name}</span>

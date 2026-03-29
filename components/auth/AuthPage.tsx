@@ -128,7 +128,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [router]);
+  }, [mode, router]);
 
   const isBusy = useMemo(() => {
     return isSubmitting || isCheckingSupabase;

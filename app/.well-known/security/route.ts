@@ -3,7 +3,7 @@
  * Helps security researchers and crawlers understand security policies
  */
 
-export default async function handler() {
+export async function GET() {
   return new Response(
     `Contact: security@socialinsight.tech
 Expires: 2025-03-29T00:00:00.000Z
