@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+import { baseUrl } from "@/lib/seo-utils";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import TestimonialForm from "@/components/modern/TestimonialForm";
@@ -6,6 +8,37 @@ import Testimonials3DBackground from "@/components/modern/Testimonials3DBackgrou
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60; // Cache for 60 seconds
+
+export const metadata: Metadata = {
+  title: "Customer Testimonials | Social Insight.Tech",
+  description:
+    "See what top creators and agencies are saying about Social Insight.Tech. Real reviews from users who have grown their Instagram presence using our analytics.",
+  keywords: [
+    "testimonials",
+    "reviews",
+    "user reviews",
+    "customer feedback",
+    "success stories",
+  ],
+  openGraph: {
+    title: "Customer Testimonials | Social Insight.Tech",
+    description:
+      "Real success stories from creators who grew their Instagram with our analytics.",
+    url: `${baseUrl}/testimonials`,
+    type: "website",
+    images: [
+      {
+        url: `${baseUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "Customer Testimonials",
+      },
+    ],
+  },
+  alternates: {
+    canonical: `${baseUrl}/testimonials`,
+  },
+};
 
 type DbTestimonialRow = {
     id: string;

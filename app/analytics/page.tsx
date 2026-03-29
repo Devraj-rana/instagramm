@@ -79,7 +79,7 @@ export default function AnalyzeIndexPage() {
       <Header />
 
       <main className="relative flex-1 overflow-hidden pt-28 sm:pt-36">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.12),_transparent_35%),radial-gradient(circle_at_80%_20%,_rgba(59,130,246,0.12),_transparent_30%),linear-gradient(180deg,_#070707_0%,_#050505_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.12),transparent_30%),linear-gradient(180deg,#070707_0%,#050505_100%)]" />
         <div className="absolute left-1/2 top-0 h-[28rem] w-[70rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[140px]" />
 
         <section className="relative mx-auto grid w-full max-w-7xl gap-14 px-6 pb-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8">
@@ -100,7 +100,7 @@ export default function AnalyzeIndexPage() {
 
             <form
               onSubmit={handleSubmit}
-              className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+              className="mt-10 rounded-4xl border border-white/10 bg-white/4 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl"
             >
               <div className="flex flex-col gap-3 sm:flex-row">
                 <label className="group flex h-16 flex-1 items-center gap-4 rounded-[1.25rem] border border-white/10 bg-black/20 px-5 transition-all focus-within:border-cyan-400/40 focus-within:bg-black/30">
@@ -167,7 +167,7 @@ export default function AnalyzeIndexPage() {
               {featurePills.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-5"
+                  className="rounded-[1.75rem] border border-white/10 bg-white/3 p-5"
                 >
                   <div className="mb-4 inline-flex rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3">
                     <item.icon className="h-5 w-5 text-cyan-300" />
@@ -182,9 +182,9 @@ export default function AnalyzeIndexPage() {
           </div>
 
           <div className="relative">
-            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-cyan-400/10 via-blue-500/8 to-transparent blur-2xl" />
+            <div className="absolute inset-0 rounded-4xl bg-linear-to-br from-cyan-400/10 via-blue-500/8 to-transparent blur-2xl" />
 
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#0d0d10]/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+            <div className="relative overflow-hidden rounded-4xl border border-white/10 bg-[#0d0d10]/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
               <div className="flex items-center justify-between border-b border-white/10 pb-5">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-500">
@@ -208,7 +208,7 @@ export default function AnalyzeIndexPage() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                    className="rounded-2xl border border-white/10 bg-white/3 p-4"
                   >
                     <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">
                       {item.label}
@@ -220,7 +220,7 @@ export default function AnalyzeIndexPage() {
                 ))}
               </div>
 
-              <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
+              <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/3 p-5">
                 <div className="flex items-center gap-3">
                   <Zap className="h-5 w-5 text-cyan-300" />
                   <p className="text-sm font-bold uppercase tracking-[0.18em] text-white">
@@ -231,14 +231,14 @@ export default function AnalyzeIndexPage() {
                 <div className="mt-4 space-y-3">
                   {auditSteps.map((step) => (
                     <div key={step} className="flex gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-cyan-300" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-cyan-300" />
                       <p className="text-sm leading-7 text-zinc-300">{step}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="mt-6 rounded-[1.5rem] border border-indigo-400/10 bg-gradient-to-br from-indigo-400/10 to-cyan-400/5 p-5">
+              <div className="mt-6 rounded-[1.5rem] border border-indigo-400/10 bg-linear-to-br from-indigo-400/10 to-cyan-400/5 p-5">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
                   Best for
                 </p>
@@ -256,3 +256,4 @@ export default function AnalyzeIndexPage() {
     </div>
   );
 }
+

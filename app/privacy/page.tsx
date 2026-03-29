@@ -1,5 +1,20 @@
+import { Metadata } from "next";
+import { baseUrl } from "@/lib/seo-utils";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Social Insight.Tech",
+  description:
+    "Read our privacy policy to understand how Social Insight.Tech collects, uses, and protects your personal data.",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: `${baseUrl}/privacy`,
+  },
+};
 
 export default function PrivacyPage() {
   return (
@@ -8,13 +23,13 @@ export default function PrivacyPage() {
       
       <main className="flex-1 relative pt-32 pb-24 sm:pt-40">
         {/* Background Decorative Element */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none translate-y-[-50%]"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-250 h-100 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none translate-y-[-50%]"></div>
 
         <div className="relative z-10 mx-auto max-w-4xl px-6 lg:px-8">
           <div className="text-center mb-16">
             <h1 className="font-display text-5xl sm:text-6xl font-black tracking-tighter text-white mb-6">
-              Privacy <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500">Policy.</span>
+              Privacy <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-400 to-pink-500">Policy.</span>
             </h1>
             <p className="text-zinc-500 text-lg font-medium italic">
               Last updated: March 17, 2026
@@ -100,3 +115,4 @@ export default function PrivacyPage() {
     </div>
   );
 }
+

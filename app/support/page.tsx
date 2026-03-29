@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+import { baseUrl } from "@/lib/seo-utils";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -12,6 +14,31 @@ import {
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
 import SupportContactForm from "@/components/modern/SupportContactForm";
+
+export const metadata: Metadata = {
+  title: "Support & Help | Social Insight.Tech",
+  description:
+    "Get help with your Social Insight.Tech account, billing, analytics, or product questions. Contact our support team via email or Instagram.",
+  keywords: ["support", "help", "contact", "customer service", "faq"],
+  openGraph: {
+    title: "Support & Help | Social Insight.Tech",
+    description:
+      "Contact Social Insight.Tech support team for account, billing, and product questions.",
+    url: `${baseUrl}/support`,
+    type: "website",
+    images: [
+      {
+        url: `${baseUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "Support Center",
+      },
+    ],
+  },
+  alternates: {
+    canonical: `${baseUrl}/support`,
+  },
+};
 
 const supportChannels = [
   {
@@ -69,8 +96,8 @@ export default function SupportPage() {
       <Header />
 
       <main className="relative flex-1 overflow-hidden pt-32 sm:pt-40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
-        <div className="absolute left-1/2 top-0 h-80 w-[72rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[140px]" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-cyan-400/40 to-transparent" />
+        <div className="absolute left-1/2 top-0 h-80 w-6xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[140px]" />
         <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-indigo-500/10 blur-[120px]" />
 
         <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-24 lg:px-8">
@@ -95,7 +122,7 @@ export default function SupportPage() {
               </p>
             </div>
 
-            <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+            <div className="rounded-4xl border border-white/10 bg-white/4 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
               <div className="flex items-start gap-4">
                 <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3">
                   <Clock3 className="h-6 w-6 text-cyan-300" />
@@ -120,10 +147,10 @@ export default function SupportPage() {
             {supportChannels.map((channel) => (
               <article
                 key={channel.title}
-                className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950/70 p-7 shadow-[0_24px_70px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
+                className="group relative overflow-hidden rounded-4xl border border-white/10 bg-zinc-950/70 p-7 shadow-[0_24px_70px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-white/20"
               >
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${channel.accent} opacity-80`}
+                  className={`absolute inset-0 bg-linear-to-br ${channel.accent} opacity-80`}
                 />
                 <div className="relative">
                   <div className="mb-6 inline-flex rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-sm">
@@ -148,7 +175,7 @@ export default function SupportPage() {
           </section>
 
           <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-            <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
+            <div className="rounded-4xl border border-white/10 bg-white/3 p-8">
               <div className="mb-6 flex items-center gap-3">
                 <BadgeHelp className="h-5 w-5 text-indigo-300" />
                 <h2 className="text-2xl font-bold tracking-tight text-white">
@@ -172,7 +199,7 @@ export default function SupportPage() {
             <SupportContactForm />
           </section>
 
-          <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
+          <section className="rounded-4xl border border-white/10 bg-white/3 p-8">
             <p className="text-sm font-bold uppercase tracking-[0.24em] text-zinc-500">
               Before you email
             </p>
@@ -221,3 +248,4 @@ export default function SupportPage() {
     </div>
   );
 }
+

@@ -169,10 +169,10 @@ function ProfileSettings() {
   return (
     <div className="space-y-8">
       {/* ── Avatar & Account Info Card ── */}
-      <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-6 sm:p-8">
+      <div className="rounded-3xl border border-white/6 bg-white/2 p-6 sm:p-8">
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
           {/* Avatar */}
-          <div className="group relative flex-shrink-0">
+          <div className="group relative shrink-0">
             <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-cyan-400/30 shadow-[0_0_30px_rgba(34,211,238,0.12)]">
               {form.avatar_url ? (
                 <img
@@ -181,7 +181,7 @@ function ProfileSettings() {
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-900/40 to-indigo-900/40">
+                <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-cyan-900/40 to-indigo-900/40">
                   <UserCircle2 className="h-12 w-12 text-cyan-300/60" />
                 </div>
               )}
@@ -258,13 +258,13 @@ function ProfileSettings() {
         {/* Status messages */}
         {error && (
           <div className="flex items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <AlertCircle className="h-4 w-4 shrink-0" />
             {error}
           </div>
         )}
         {success && (
           <div className="flex items-center gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
-            <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
             {success}
           </div>
         )}
@@ -272,7 +272,7 @@ function ProfileSettings() {
         <button
           type="submit"
           disabled={isSaving}
-          className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-pink-500 text-base font-bold text-white transition-all hover:scale-[1.01] hover:shadow-[0_12px_40px_rgba(99,102,241,0.3)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 sm:w-auto sm:px-10"
+          className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-cyan-400 via-indigo-500 to-pink-500 text-base font-bold text-white transition-all hover:scale-[1.01] hover:shadow-[0_12px_40px_rgba(99,102,241,0.3)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 sm:w-auto sm:px-10"
         >
           {isSaving ? (
             <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -312,7 +312,7 @@ function SettingInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-12 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-sm text-white placeholder:text-zinc-600 outline-none transition-all focus:border-cyan-400/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-cyan-400/15"
+        className="h-12 w-full rounded-xl border border-white/8 bg-white/3 px-4 text-sm text-white placeholder:text-zinc-600 outline-none transition-all focus:border-cyan-400/50 focus:bg-white/5 focus:ring-2 focus:ring-cyan-400/15"
       />
     </label>
   );
@@ -618,7 +618,7 @@ function SecuritySettings() {
   return (
     <div className="space-y-6">
       {/* ── Change Password ── */}
-      <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-6">
+      <div className="rounded-3xl border border-white/6 bg-white/2 p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/15 text-indigo-300">
             <Shield className="h-4 w-4" />
@@ -647,7 +647,7 @@ function SecuritySettings() {
       </div>
 
       {/* ── Change Email ── */}
-      <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-6">
+      <div className="rounded-3xl border border-white/6 bg-white/2 p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-300">
             <Mail className="h-4 w-4" />
@@ -672,7 +672,7 @@ function SecuritySettings() {
       </div>
 
       {/* ── Change Username ── */}
-      <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-6">
+      <div className="rounded-3xl border border-white/6 bg-white/2 p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-pink-500/15 text-pink-300">
             <AtSign className="h-4 w-4" />
@@ -697,7 +697,7 @@ function SecuritySettings() {
       </div>
 
       {/* ── Sign Out ── */}
-      <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-6">
+      <div className="rounded-3xl border border-white/6 bg-white/2 p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-500/15 text-red-300">
             <LogOut className="h-4 w-4" />
@@ -748,7 +748,7 @@ function SecurityInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-sm text-white placeholder:text-zinc-600 outline-none transition-all focus:border-cyan-400/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-cyan-400/15 pr-12"
+        className="h-12 w-full rounded-xl border border-white/8 bg-white/3 px-4 text-sm text-white placeholder:text-zinc-600 outline-none transition-all focus:border-cyan-400/50 focus:bg-white/5 focus:ring-2 focus:ring-cyan-400/15 pr-12"
       />
       {isPasswordForm && (
         <button
@@ -772,7 +772,7 @@ function StatusPill({ type, text }: { type: "error" | "success"; text: string })
   const Icon = type === "error" ? AlertCircle : CheckCircle2;
   return (
     <div className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm ${styles}`}>
-      <Icon className="h-4 w-4 flex-shrink-0" />
+      <Icon className="h-4 w-4 shrink-0" />
       {text}
     </div>
   );
@@ -783,7 +783,7 @@ function SecurityButton({ saving, label }: { saving: boolean; label: string }) {
     <button
       type="submit"
       disabled={saving}
-      className="flex h-11 items-center gap-2 rounded-xl bg-white/[0.06] border border-white/[0.08] px-6 text-sm font-semibold text-zinc-200 transition-all hover:bg-white/[0.1] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex h-11 items-center gap-2 rounded-xl bg-white/6 border border-white/8 px-6 text-sm font-semibold text-zinc-200 transition-all hover:bg-white/10 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {saving ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
       {saving ? "Saving..." : label}
@@ -818,7 +818,7 @@ export default function AccountPage() {
           {/* ── Layout: Sidebar + Content ── */}
           <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
             {/* Sidebar / Tab Nav */}
-            <nav className="flex flex-row gap-2 overflow-x-auto lg:w-64 lg:flex-shrink-0 lg:flex-col lg:gap-1.5 lg:overflow-visible">
+            <nav className="flex flex-row gap-2 overflow-x-auto lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1.5 lg:overflow-visible">
               {tabs.map((t) => {
                 const Icon = t.icon;
                 const isActive = tab === t.id;
@@ -828,15 +828,15 @@ export default function AccountPage() {
                     onClick={() => setTab(t.id)}
                     className={`group flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition-all lg:w-full ${
                       isActive
-                        ? "border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 shadow-[0_0_24px_rgba(34,211,238,0.06)]"
-                        : "border border-transparent hover:border-white/[0.06] hover:bg-white/[0.02]"
+                        ? "border border-cyan-400/20 bg-linear-to-r from-cyan-500/10 to-indigo-500/10 shadow-[0_0_24px_rgba(34,211,238,0.06)]"
+                        : "border border-transparent hover:border-white/6 hover:bg-white/2"
                     }`}
                   >
                     <div
-                      className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl transition-all ${
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all ${
                         isActive
                           ? "bg-cyan-400/15 text-cyan-300 shadow-[0_0_16px_rgba(34,211,238,0.12)]"
-                          : "bg-white/[0.04] text-zinc-500 group-hover:text-zinc-300"
+                          : "bg-white/4 text-zinc-500 group-hover:text-zinc-300"
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -876,7 +876,7 @@ export default function AccountPage() {
             </nav>
 
             {/* Content Area */}
-            <div className="min-w-0 flex-1 rounded-3xl border border-white/[0.06] bg-white/[0.025] p-6 shadow-[0_16px_60px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-8 lg:p-10">
+            <div className="min-w-0 flex-1 rounded-3xl border border-white/6 bg-white/2.5 p-6 shadow-[0_16px_60px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-8 lg:p-10">
               <div className="bg-[radial-gradient(ellipse_at_top_left,rgba(34,211,238,0.06),transparent_50%),radial-gradient(ellipse_at_bottom_right,rgba(139,92,246,0.05),transparent_50%)]">
                 {tab === "profile" && <ProfileSettings />}
                 {tab === "orders" && <MyOrders />}
@@ -891,3 +891,4 @@ export default function AccountPage() {
     </div>
   );
 }
+

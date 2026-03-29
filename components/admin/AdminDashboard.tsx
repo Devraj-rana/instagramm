@@ -517,9 +517,9 @@ export default function AdminDashboard() {
                       </motion.button>
                     </div>
                     
-                    <div className="mt-5">
-                       <p className="text-sm leading-relaxed text-zinc-300 italic">"{testimonial.body}"</p>
-                    </div>
+                      <div className="mt-5">
+                        <p className="text-sm leading-relaxed text-zinc-300 italic">&quot;{testimonial.body}&quot;</p>
+                      </div>
                     
                     <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4">
                       <div className="flex items-center gap-1">

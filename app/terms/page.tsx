@@ -1,5 +1,20 @@
+import { Metadata } from "next";
+import { baseUrl } from "@/lib/seo-utils";
 import Header from "@/components/modern/Header";
 import Footer from "@/components/modern/Footer";
+
+export const metadata: Metadata = {
+  title: "Terms of Service | Social Insight.Tech",
+  description:
+    "Read the Social Insight.Tech Terms of Service. Understand the terms, conditions, and policies that govern your use of our platform.",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: `${baseUrl}/terms`,
+  },
+};
 
 export default function TermsOfService() {
   return (

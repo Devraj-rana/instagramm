@@ -14,8 +14,8 @@ export async function PATCH(
   }
 
   const { id } = await context.params;
-  const body = await request.json();
-  const updates: Record<string, any> = { updated_at: new Date().toISOString() };
+  const body = (await request.json()) as { walletBalance?: unknown; status?: unknown };
+  const updates: Record<string, string | number> = { updated_at: new Date().toISOString() };
 
   if (body.walletBalance !== undefined) {
     const walletBalance = Number(body.walletBalance);
@@ -26,7 +26,7 @@ export async function PATCH(
   }
 
   if (body.status !== undefined) {
-    if (!["pending", "completed"].includes(body.status)) {
+    if (typeof body.status !== 'string' || !["pending", "completed"].includes(body.status)) {
       return NextResponse.json({ success: false, error: "Invalid status value." }, { status: 400 });
     }
     updates.status = body.status;

@@ -17,7 +17,7 @@ interface Transaction {
   amount: number;
   type: "credit" | "debit";
   description: string;
-  metadata: any;
+  metadata: Record<string, unknown> | null;
 }
 
 export default function TransactionHistory() {

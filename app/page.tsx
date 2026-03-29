@@ -1,37 +1,45 @@
-"use client";
+import { Metadata } from "next";
+import { baseUrl } from "@/lib/seo-utils";
+import HomeClient from "./HomeClient";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Header from "@/components/modern/Header";
-import Footer from "@/components/modern/Footer";
-import FuturisticHero from "@/components/modern/FuturisticHero";
+export const metadata: Metadata = {
+  title: "Instagram Analytics & Growth Tools | Social Insight.Tech",
+  description:
+    "Analyze Instagram profiles in real-time with AI-powered analytics. Get audience insights, engagement metrics, and growth recommendations. Start free analysis now.",
+  keywords: [
+    "instagram analyzer",
+    "instagram metrics",
+    "social media analytics",
+    "instagram insights",
+    "follower analysis",
+    "engagement tracking",
+  ],
+  openGraph: {
+    title: "Instagram Analytics & Growth Tools | Social Insight.Tech",
+    description:
+      "Analyze Instagram profiles in real-time with AI-powered analytics. Get audience insights and growth metrics.",
+    url: baseUrl,
+    type: "website",
+    images: [
+      {
+        url: `${baseUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: "Social Insight.Tech Analytics Dashboard",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Instagram Analytics & Growth Tools",
+    description: "Analyze Instagram profiles with AI-powered analytics",
+    images: [`${baseUrl}/og-image.png`],
+  },
+  alternates: {
+    canonical: baseUrl,
+  },
+};
 
 export default function Home() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleAnalyze = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username.trim()) return;
-
-    setIsLoading(true);
-    const cleanUsername = username.replace(/^@/, "").trim();
-    router.push(`/analytics/${cleanUsername}`);
-  };
-
-  return (
-    <div className="flex min-h-screen flex-col bg-[#050505] selection:bg-indigo-500/30 selection:text-indigo-200">
-      <Header />
-      <main className="flex-1 w-full">
-        <FuturisticHero
-          username={username}
-          setUsername={setUsername}
-          onAnalyze={handleAnalyze}
-          isLoading={isLoading}
-        />
-      </main>
-      <Footer />
-    </div>
-  );
+  return <HomeClient />;
 }
