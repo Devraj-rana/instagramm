@@ -172,6 +172,14 @@
   }
 }
 
-body {
-  cursor: none;
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+}
+
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
 }

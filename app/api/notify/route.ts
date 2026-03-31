@@ -9,9 +9,9 @@ export async function POST(req: NextRequest) {
     if (!subject || !html) {
       return NextResponse.json({ error: "Missing subject or html" }, { status: 400 });
     }
-    const sendTo = to || process.env.NOTIFY_EMAIL;
+    const sendTo = to || process.env.NOTIFY_EMAIL || process.env.SUPPORT_TO_EMAIL;
     if (!sendTo) {
-      return NextResponse.json({ error: "No recipient email set" }, { status: 400 });
+      return NextResponse.json({ error: "No recipient email set (NOTIFY_EMAIL or SUPPORT_TO_EMAIL)" }, { status: 400 });
     }
     await resend.emails.send({
       from: process.env.NOTIFY_FROM_EMAIL || "notify@yourdomain.com",

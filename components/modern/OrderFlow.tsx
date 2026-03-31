@@ -487,6 +487,29 @@ export default function OrderFlow() {
         .select();
 
       if (error) throw error;
+      
+      // Fire off an admin notification (best-effort)
+      try {
+        await fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            subject: "New service order",
+            html: [
+              "<h2>New order placed</h2>",
+              `<p>Order ID: ${data[0].id}</p>`,
+              `<p>User ID: ${userId}</p>`,
+              `<p>Platform: ${selection.platform}</p>`,
+              `<p>Service: ${selection.serviceId}</p>`,
+              `<p>Quantity: ${selection.quantity}</p>`,
+              `<p>Total: ${price}</p>`,
+              `<p>Target: ${selection.username}</p>`
+            ].join("")
+          })
+        });
+      } catch (notifyError) {
+        console.error("Notify order email failed:", notifyError);
+      }
 
       // Financial Log
       await supabase

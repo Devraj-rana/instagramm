@@ -12,6 +12,14 @@ export default function CustomCursor() {
     const pathname = usePathname();
 
     useEffect(() => {
+        const isTouchLike =
+            typeof window !== "undefined" &&
+            (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
+
+        if (isTouchLike) {
+            return;
+        }
+
         // Run the cursor everywhere
         const cursor = new MouseFollower({
             container: document.body,

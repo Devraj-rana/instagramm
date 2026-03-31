@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 interface SupportRequestBody {
   name?: string;
@@ -14,11 +15,33 @@ function escapeHtml(value: string) {
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
+    .replaceAll("\"", "&quot;")
     .replaceAll("'", "&#39;");
 }
 
 export async function POST(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  const accessToken = authHeader?.replace(/^Bearer\s+/i, "").trim();
+
+  if (!accessToken) {
+    return NextResponse.json(
+      { success: false, error: "Please log in to send a support request." },
+      { status: 401 }
+    );
+  }
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabaseAdmin.auth.getUser(accessToken);
+
+  if (authError || !user) {
+    return NextResponse.json(
+      { success: false, error: "Please log in to send a support request." },
+      { status: 401 }
+    );
+  }
+
   const resendApiKey = process.env.RESEND_API_KEY;
   const supportToEmail =
     process.env.SUPPORT_TO_EMAIL ?? "support@socialinsight.tech";
@@ -46,22 +69,27 @@ export async function POST(request: Request) {
     );
   }
 
-  const name = body.name?.trim() ?? "";
-  const email = body.email?.trim() ?? "";
+  const name =
+    body.name?.trim() ||
+    (user.user_metadata as Record<string, string | undefined>)?.full_name ||
+    (user.user_metadata as Record<string, string | undefined>)?.username ||
+    user.email ||
+    "";
+  const email = user.email ?? "";
   const username = body.username?.replace(/^@/, "").trim() ?? "";
   const issueType = body.issueType?.trim() ?? "General support";
   const message = body.message?.trim() ?? "";
 
-  if (!name || !email || !message) {
+  if (!name || !message) {
     return NextResponse.json(
-      { success: false, error: "Name, email, and message are required." },
+      { success: false, error: "Name and message are required." },
       { status: 400 }
     );
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email) {
     return NextResponse.json(
-      { success: false, error: "Enter a valid email address." },
+      { success: false, error: "Your account email is required to send support." },
       { status: 400 }
     );
   }

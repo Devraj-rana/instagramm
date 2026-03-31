@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             subject: 'Funds Added via Razorpay',
-            html: `<h2>Funds Added</h2><p>User ID: ${userId}</p><p>Amount: ₹${creditedAmount}</p><p>Payment ID: ${razorpay_payment_id}</p><p>Order ID: ${razorpay_order_id}</p>`
+            html: `<h2>Funds Added</h2><p>User ID: ${userId}</p><p>Amount: &#8377;${creditedAmount}</p><p>Payment ID: ${razorpay_payment_id}</p><p>Order ID: ${razorpay_order_id}</p>`
           })
         });
       } catch { /* ignore email errors */ }
